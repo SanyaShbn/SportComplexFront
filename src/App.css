@@ -45,6 +45,35 @@ font-family: 'PT Sans', sans-serif;
 transition: .3s ease-in-out;
 }
 
+@media screen and (max-width: 500px){
 
-
+  .general_navigation li{
+      padding-left: 0px;
+      padding-right: 0px;
+  }
+  .general_navigation{
+      height: 50px;
+      padding: 0px;
+  }
+  .navigation_element{
+      margin-top: 15px;
+     font-size: 9px;
+  }
+  .navigation_element {
+  color: white;
+  text-shadow: 1px 1px black;
+  letter-spacing: none;
+  border-bottom: 2px solid transparent;
+  }
+  a {
+  text-decoration: none;
+  display: inline-block;
+  padding: 5px 5px;
+  letter-spacing: 1px;
+  margin: 0 10px;
+  font-size: 24px;
+  font-family: 'PT Sans', sans-serif;
+  transition: .3s ease-in-out;
+}
+}
 
