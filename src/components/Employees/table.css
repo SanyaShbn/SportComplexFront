@@ -6,20 +6,44 @@ body {
   color: rgb(0, 128, 255);
   text-align: center;
   word-spacing: 10px;
-  text-shadow: 4px 4px 3px black;
   background-color: white;
   background-size: cover;
 }
 
-table {
-  margin: auto;
+
+.container{
+  margin-top: 10px;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+h1 {
+  text-shadow: 4px 4px 3px black;
+}
+
+h2{
+  text-shadow: 4px 4px 3px black;
+}
+
+.dialog{
   text-shadow: none;
+}
+
+.grid_component{
+  background-color: white;
+}
+
+.table {
+  margin: auto;
   font-family: Comic Sans MS;
   text-align: center;
   border-collapse: separate;
   border-spacing: 5px;
   background-position: top center;
   background-size: cover;
+  background-color: white;
   color: rgb(0, 128, 255);
   border: 7px solid white;
   border-radius: 20px;
@@ -52,12 +76,14 @@ input {
   text-decoration: none;
   display: inline-block;
   padding: 2px 15px;
-  margin: 2px 5px;
+  margin: 2px 10px;
   position: relative;
   overflow: hidden;
   border: 2px solid rgb(0, 128, 255);
   border-radius: 8px;
   font-family: Comic Sans MS;
+  text-align: left;
+  font-size: 10px;
   color: black;
   transition: .2s ease-in-out;
 }
@@ -79,6 +105,23 @@ input {
 }
 
 .shine-button:hover:before {
-  left: 150px;
+  left: 250px;
   transition: .5s ease-in-out;
+}
+
+@media only screen and (min-width: 768px) {
+  .EmployeeTable {
+    flex-direction: row;
+  }
+}
+
+/* Media query for smaller screens */
+@media only screen and (max-width: 500px) {
+  .EmployeeTable {
+    flex-direction: column;
+  }
+
+  .AddEmployee {
+    width: 100%;
+  }
 }
