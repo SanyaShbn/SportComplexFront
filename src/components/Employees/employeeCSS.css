@@ -2,11 +2,9 @@
 body {
   font-family: Comic Sans MS, Impact, fantasy, 'Times New Roman', Times, serif;
   font-weight: 500;
-
   color: rgb(0, 128, 255);
   text-align: center;
   word-spacing: 10px;
-  text-shadow: 4px 4px 3px black;
   background-color: white;
   background-image: url("workout.jpeg");
   background-size: cover;
