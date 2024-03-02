@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
-import EmployeeTable from '../Employees/EmployeeTable.js';
 import Snackbar from '@mui/material/Snackbar';
+import './login.css';
+import EmployeeTable from '../Employees/EmployeeTable.js';
 
 function Login() {
   const [user, setUser] = useState({
@@ -41,23 +42,30 @@ function Login() {
   }
   else {  
     return(
-      <div>
-        <Stack spacing={2} alignItems='center' mt={2}>
+      <body className="login-page">
+         <style>
+              @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+         </style>
+         <link rel="stylesheet" href="./login.css"/>
+         <h1 className='title'>BestSports</h1>
+        <Stack display='inline-block' spacing={2} alignItems='center' className='input_background'>
           <TextField 
             name="user_login"
-            label="Username" 
+            label="Логин" 
+            className="login_page_field"
             onChange={handleChange} />
+            <br/>
           <TextField 
             type="password"
             name="user_password"
-            label="Password"
+            label="Пароль"
+            className="login_page_field"
             onChange={handleChange}/>
-          <Button 
-            variant="outlined" 
-            color="primary" 
-            onClick={login}>
-              Login
-          </Button>
+            <br/>
+            <br/>
+           <Button className="login-button" variant="contained" onClick={login}> Войти </Button>
+           <br/>
+           <a className='register-link' href=''> Впревые в системе? Зарегестрироваться</a>
         </Stack>
         <Snackbar 
           open={open}
@@ -65,7 +73,7 @@ function Login() {
           onClose={() => setOpen(false)}
           message="Ошибка аутентификации: Неверный логин или пароль"
         />
-      </div>
+      </body>
     );
   }
 }
