@@ -28,14 +28,24 @@ function EmployeeTable() {
     }, []);
   
     const fetchEmployees = () => {
-      fetch('api/serviceEmployees')
+      const token = sessionStorage.getItem("jwt");
+
+      fetch('api/serviceEmployees', {
+        headers: { 'Authorization' : token }
+      })
       .then(response => response.json())
       .then(data => setEmployees(data._embedded.serviceEmployees))
       .catch(err => console.error(err));    
     }
     const onDelClick = (url) => {
       if (window.confirm("ВЫ уверены, что хотите удалить запись о сотруднике обслуживающего персонала?")) {
-        fetch(url.replace(SERVER_URL, ''),  {method:  'DELETE'})
+
+        const token = sessionStorage.getItem("jwt");
+
+        fetch(url.replace(SERVER_URL, ''), {
+          method: 'DELETE',
+          headers: { 'Authorization' : token }
+          })
         .then(response => {
           if (response.ok) {
             fetchEmployees();
@@ -49,9 +59,13 @@ function EmployeeTable() {
       }
     }
     const addEmployee = (employee) => {
+
+      const token = sessionStorage.getItem("jwt");
+
       fetch('api/serviceEmployees',
         { method: 'POST', headers: {
           'Content-Type':'application/json',
+          'Authorization' : token
         },
         body: JSON.stringify(employee)
       })
@@ -68,11 +82,15 @@ function EmployeeTable() {
   
     // Update existing car
     const updateEmployee = (employee, link) => {
+
+      const token = sessionStorage.getItem("jwt");
+
       fetch(link.replace(SERVER_URL, ''),
         { 
           method: 'PUT', 
           headers: {
           'Content-Type':  'application/json',
+          'Authorization' : token
         },
         body: JSON.stringify(employee)
       })
