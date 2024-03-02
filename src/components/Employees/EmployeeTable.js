@@ -7,6 +7,7 @@ import {GridToolbarExport} from '@mui/x-data-grid';
 import {gridClasses } from '@mui/x-data-grid';
 import Snackbar from '@mui/material/Snackbar';
 import './table.css';
+import './employeeCSS.css';
 import AddEmployee from './AddEmployee';
 import EditEmployee from './EditEmployee';
 
@@ -157,6 +158,14 @@ function EmployeeTable() {
     ];
     
   return (
+    <div className='info_pages_body'>
+      <div className="info_pages_nav">
+        <a href="/admin_main" className="info_pages_navigation_element">Главная страница</a>
+        <a href="/" className="info_pages_navigation_element">Клиенты</a>
+        <a href="/" className="info_pages_navigation_element">Сооружения комплекса</a>
+      </div>
+      <h1>Сотрудники спортивно-оздоровительного комплекса</h1>
+      <h2>Сотрудники, зарегестрированные в системе</h2>
     <React.Fragment>
       <AddEmployee addEmployee={addEmployee} />
       <div className="container" style={{ height: 400, width: "100%"}}>
@@ -175,6 +184,7 @@ function EmployeeTable() {
         />
       </div>
     </React.Fragment>
+    </div>
     // <div>
     // <table>
     //   <thead>
