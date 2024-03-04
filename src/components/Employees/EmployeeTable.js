@@ -29,10 +29,10 @@ function EmployeeTable() {
     }, []);
   
     const fetchEmployees = () => {
-      const token = sessionStorage.getItem("jwt");
+      // const token = sessionStorage.getItem("jwt");
 
       fetch('api/serviceEmployees', {
-        headers: { 'Authorization' : token }
+        // headers: { 'Authorization' : token }
       })
       .then(response => response.json())
       .then(data => setEmployees(data._embedded.serviceEmployees))
@@ -41,11 +41,11 @@ function EmployeeTable() {
     const onDelClick = (url) => {
       if (window.confirm("ВЫ уверены, что хотите удалить запись о сотруднике обслуживающего персонала?")) {
 
-        const token = sessionStorage.getItem("jwt");
+        // const token = sessionStorage.getItem("jwt");
 
         fetch(url.replace(SERVER_URL, ''), {
           method: 'DELETE',
-          headers: { 'Authorization' : token }
+          // headers: { 'Authorization' : token }
           })
         .then(response => {
           if (response.ok) {
@@ -61,12 +61,12 @@ function EmployeeTable() {
     }
     const addEmployee = (employee) => {
 
-      const token = sessionStorage.getItem("jwt");
+      // const token = sessionStorage.getItem("jwt");
 
       fetch('api/serviceEmployees',
         { method: 'POST', headers: {
           'Content-Type':'application/json',
-          'Authorization' : token
+          // 'Authorization' : token
         },
         body: JSON.stringify(employee)
       })
@@ -81,17 +81,17 @@ function EmployeeTable() {
       .catch(err => console.error(err))
     }
   
-    // Update existing car
+
     const updateEmployee = (employee, link) => {
 
-      const token = sessionStorage.getItem("jwt");
+      // const token = sessionStorage.getItem("jwt");
 
       fetch(link.replace(SERVER_URL, ''),
         { 
           method: 'PUT', 
           headers: {
           'Content-Type':  'application/json',
-          'Authorization' : token
+          // 'Authorization' : token
         },
         body: JSON.stringify(employee)
       })
@@ -161,8 +161,8 @@ function EmployeeTable() {
     <div className='info_pages_body'>
       <div className="info_pages_nav">
         <a href="/admin_main" className="info_pages_navigation_element">Главная страница</a>
-        <a href="/" className="info_pages_navigation_element">Клиенты</a>
-        <a href="/" className="info_pages_navigation_element">Сооружения комплекса</a>
+        <a href="" className="info_pages_navigation_element">Клиенты</a>
+        <a href="" className="info_pages_navigation_element">Сооружения комплекса</a>
       </div>
       <h1>Сотрудники спортивно-оздоровительного комплекса</h1>
       <h2>Сотрудники, зарегестрированные в системе</h2>
