@@ -30,8 +30,7 @@ function EmployeeTable() {
   
     const fetchEmployees = () => {
       // const token = sessionStorage.getItem("jwt");
-
-      fetch('api/serviceEmployees', {
+      fetch(SERVER_URL + '/api/serviceEmployees', {
         // headers: { 'Authorization' : token }
       })
       .then(response => response.json())
@@ -43,7 +42,7 @@ function EmployeeTable() {
 
         // const token = sessionStorage.getItem("jwt");
 
-        fetch(url.replace(SERVER_URL, ''), {
+        fetch(url, {
           method: 'DELETE',
           // headers: { 'Authorization' : token }
           })
@@ -63,7 +62,7 @@ function EmployeeTable() {
 
       // const token = sessionStorage.getItem("jwt");
 
-      fetch('api/serviceEmployees',
+      fetch(SERVER_URL + '/api/serviceEmployees',
         { method: 'POST', headers: {
           'Content-Type':'application/json',
           // 'Authorization' : token
@@ -86,7 +85,7 @@ function EmployeeTable() {
 
       // const token = sessionStorage.getItem("jwt");
 
-      fetch(link.replace(SERVER_URL, ''),
+      fetch(link,
         { 
           method: 'PUT', 
           headers: {
@@ -158,12 +157,12 @@ function EmployeeTable() {
     ];
     
   return (
-    <div className='info_pages_body'>
-      <div className="info_pages_nav">
+      <main className='info_pages_body'>
+      {/* <div className="info_pages_nav">
         <a href="/admin_main" className="info_pages_navigation_element">Главная страница</a>
         <a href="" className="info_pages_navigation_element">Клиенты</a>
         <a href="" className="info_pages_navigation_element">Сооружения комплекса</a>
-      </div>
+      </div> */}
       <h1>Сотрудники спортивно-оздоровительного комплекса</h1>
       <h2>Сотрудники, зарегестрированные в системе</h2>
     <React.Fragment>
@@ -184,31 +183,31 @@ function EmployeeTable() {
         />
       </div>
     </React.Fragment>
-    </div>
-    // <div>
-    // <table>
-    //   <thead>
-    //     <tr>
-    //       <th>ID</th>
-    //       <th>Имя</th>
-    //       <th>Фамилия</th>
-    //       <th>Отчество</th>
-    //       <th>Номер</th>
-    //       <th>Дата рождения</th>
-    //       <th>Оклад(бел.руб.)</th>
-    //       <th>Премиальные(бел.руб.)</th>
-    //     </tr>
-    //   </thead>
-    //   <tbody>
-    //     <tr>
-    //         {employees}
-    //         <td>{updateButton}</td>
-    //         <td>{deleteButton}</td>
-    //     </tr>
-    //   </tbody>
-    // </table>
-    // <AddEmployee />
-    // </div>
+    </main>
+  // <div>
+  //    <table>
+  //      <thead>
+  //        <tr>
+  //          <th>ID</th>
+  //          <th>Имя</th>
+  //          <th>Фамилия</th>
+  //          <th>Отчество</th>
+  //          <th>Номер</th>
+  //          <th>Дата рождения</th>
+  //          <th>Оклад(бел.руб.)</th>
+  //          <th>Премиальные(бел.руб.)</th>
+  //        </tr>
+  //      </thead>
+  //      <tbody>
+  //        <tr>
+  //            {employees}
+  //            <td>{updateButton}</td>
+  //            <td>{deleteButton}</td>
+  //        </tr>
+  //      </tbody>
+  //   </table>
+  //   <AddEmployee />
+  //   </div>
   );
 }
 
