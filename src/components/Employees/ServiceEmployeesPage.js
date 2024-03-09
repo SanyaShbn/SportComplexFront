@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import '../MainPage/main.css'
+import '../CSS/main.css'
 import Header from '../MainPage/Header'
 import Sidebar from '../MainPage/Sidebar'
 import EmployeeTable from './EmployeeTable'
