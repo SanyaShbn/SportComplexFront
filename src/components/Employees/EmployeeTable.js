@@ -6,8 +6,8 @@ import {GridToolbarContainer} from '@mui/x-data-grid';
 import {GridToolbarExport} from '@mui/x-data-grid';
 import {gridClasses } from '@mui/x-data-grid';
 import Snackbar from '@mui/material/Snackbar';
-import './table.css';
-import './employeeCSS.css';
+import '../CSS/employeeCSS.css';
+import '../CSS/table.css';
 import AddEmployee from './AddEmployee';
 import EditEmployee from './EditEmployee';
 
