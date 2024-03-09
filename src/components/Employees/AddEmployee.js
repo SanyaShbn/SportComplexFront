@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import './employeeCSS.css';
-import './table.css';
+import '../CSS/employeeCSS.css';
+import '../CSS/table.css';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
