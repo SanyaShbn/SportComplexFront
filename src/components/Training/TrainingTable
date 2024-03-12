@@ -1,0 +1,158 @@
+
+import React,  { useEffect, useState } from 'react';
+import { SERVER_URL } from '../../constants.js';
+import {DataGrid, ruRU} from '@mui/x-data-grid';
+import {GridToolbarContainer} from '@mui/x-data-grid';
+import {GridToolbarExport} from '@mui/x-data-grid';
+import {gridClasses } from '@mui/x-data-grid';
+import Snackbar from '@mui/material/Snackbar';
+import '../CSS/employeeCSS.css';
+import '../CSS/table.css';
+import AddTraining from './AddTraining';
+import EditTraining from './EditTraining';
+
+function CustomToolbar() {
+  return (
+    <GridToolbarContainer className={gridClasses.toolbarContainer}>
+      <GridToolbarExport />
+    </GridToolbarContainer>
+  );
+}
+
+function TrainingTable() {
+
+    const [trainings, setTrainings] = useState([]);
+    const [open, setOpen] = useState(false);
+  
+    useEffect(() => {
+      fetchTrainings();
+    }, []);
+  
+    const fetchTrainings = () => {
+      // const token = sessionStorage.getItem("jwt");
+      fetch(SERVER_URL + '/api/trainings', {
+        // headers: { 'Authorization' : token }
+      })
+      .then(response => response.json())
+      .then(data => setTrainings(data._embedded.trainings))
+      .catch(err => console.error(err));    
+    }
+    const onDelClick = (url) => {
+      if (window.confirm("ВЫ уверены, что хотите удалить запись о тренировке?")) {
+
+        // const token = sessionStorage.getItem("jwt");
+
+        fetch(url, {
+          method: 'DELETE',
+          // headers: { 'Authorization' : token }
+          })
+        .then(response => {
+          if (response.ok) {
+            fetchTrainings();
+            setOpen(true);
+          }
+          else {
+            alert('Что-то пошло не так!');
+          }
+        })
+        .catch(err => console.error(err))
+      }
+    }
+    const addTraining = (training, complexFacilityId) => {
+
+      // const token = sessionStorage.getItem("jwt");
+
+      fetch(SERVER_URL + '/api/trainings?complexFacilityId='+ complexFacilityId,
+        { method: 'POST', headers: {
+          'Content-Type':'application/json',
+          // 'Authorization' : token
+        },
+        body: JSON.stringify(training)
+      })
+      .then(response => {
+        if (response.ok) {
+          fetchTrainings();
+        }
+        else {
+          alert('Что-то пошло не так!');
+        }
+      })
+      .catch(err => console.error(err))
+    }
+  
+
+    const updateTraining = (training, link) => {
+
+      // const token = sessionStorage.getItem("jwt");
+
+      fetch(link,
+        { 
+          method: 'PUT', 
+          headers: {
+          'Content-Type':  'application/json',
+          // 'Authorization' : token
+        },
+        body: JSON.stringify(training)
+      })
+      .then(response => {
+        if (response.ok) {
+          fetchTrainings();
+        }
+        else {
+          alert('Что-то пошло не так!');
+        }
+      })
+      .catch(err => console.error(err))
+    }
+     
+    const columns = [
+        {field: 'trainingDateTime', headerName: 'Дата и время проведения', width: 300},
+        {field: 'cost', headerName: 'Стоимость (бел.руб.)', width: 300},
+        {field: 'complexFacility', headerName: 'Место проведения', width: 400},
+      {
+        field: '_links.training.href', 
+        headerName: '', 
+        sortable: false,
+        filterable: false,
+        width: 100,
+        renderCell: row => <EditTraining
+                              data={row} 
+                              updateTraining={updateTraining} />
+      },
+      {
+        field: '_links.self.href', 
+        headerName: '', 
+        width:120,
+        sortable: false,
+        filterable: false,
+        renderCell: row => 
+        <button className="shine-button" variant="contained" onClick={() => onDelClick(row.id)}> Удалить </button>
+      }
+    ];
+    
+  return (
+      <main className='info_pages_body'>
+      <h2>Тренировки</h2>
+    <React.Fragment>
+      <AddTraining addTraining={addTraining} />
+      <div className="container" style={{ height: 400, width: "100%"}}>
+        <DataGrid localeText={ruRU.components.MuiDataGrid.defaultProps.localeText} className="grid_component" 
+          columns={columns} 
+          rows={trainings} 
+          disableSelectionOnClick={true}
+          getRowId={row => row._links.self.href}
+          components={{ Toolbar: CustomToolbar }}
+        />
+        <Snackbar
+          open={open}
+          autoHideDuration={2000}
+          onClose={() => setOpen(false)}
+          message="Запись о тренировке удалена"
+        />
+      </div>
+    </React.Fragment>
+    </main>
+  );
+}
+
+export default TrainingTable;
