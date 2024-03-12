@@ -36,17 +36,17 @@ function Sidebar({openSidebarToggle, OpenSidebar}) {
                 </a>
             </li>
             <li className='sidebar-list-item'>
-                <a href="">
-                    <BsFillPersonVcardFill className='icon'/> Клиенты
+                <a href="test">
+                    <BsFillPersonVcardFill className='icon'/> Клиенты(Тест)
                 </a>
             </li>
             <li className='sidebar-list-item'>
-                <a href="">
+                <a href="complex_facilities">
                     <IoIosFitness className='icon'/> Сооружения комплекса
                 </a>
             </li>
             <li className='sidebar-list-item'>
-                <a href="">
+                <a href="trainings">
                     <MdOutlineSportsGymnastics className='icon'/> Тренировки
                 </a>
             </li>
