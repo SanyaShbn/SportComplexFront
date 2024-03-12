@@ -31,6 +31,9 @@ import {
 } from 'react-router-dom';
 import Main from './components/MainPage/Main'
 import ServiceEmployeesPage from './components/Employees/ServiceEmployeesPage'
+import ComplexfacilitiesPage from './components/ComplexFacility/ComplexFacilitiesPage'
+import EmployeeFacilityPage from './components/ServiceEmployee_ComplexFacility/EmployeeFacilityPage';
+import TrainingPage from './components/Training/TrainingsPage';
 
 function App() {
   return (
@@ -39,6 +42,9 @@ function App() {
       <Routes>
           <Route path="/" element={<Main />} />
           <Route path="service_employees" element={<ServiceEmployeesPage />} />
+          <Route path="complex_facilities" element={<ComplexfacilitiesPage />} />
+          <Route path="trainings" element={<TrainingPage />} />
+          <Route path="test" element={<EmployeeFacilityPage  />} />
           <Route path="main" element={<Main />} />
       </Routes>
     </BrowserRouter>
