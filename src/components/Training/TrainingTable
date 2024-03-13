@@ -1,5 +1,6 @@
 
 import React,  { useEffect, useState } from 'react';
+import axios from 'axios';
 import { SERVER_URL } from '../../constants.js';
 import {DataGrid, ruRU} from '@mui/x-data-grid';
 import {GridToolbarContainer} from '@mui/x-data-grid';
@@ -23,6 +24,7 @@ function TrainingTable() {
 
     const [trainings, setTrainings] = useState([]);
     const [open, setOpen] = useState(false);
+    const [rows, setRows] = useState([]);
   
     useEffect(() => {
       fetchTrainings();
@@ -56,13 +58,15 @@ function TrainingTable() {
           }
         })
         .catch(err => console.error(err))
+
       }
     }
     const addTraining = (training, complexFacilityId) => {
 
+      console.log(complexFacilityId);
       // const token = sessionStorage.getItem("jwt");
 
-      fetch(SERVER_URL + '/api/trainings?complexFacilityId='+ complexFacilityId,
+      fetch(SERVER_URL + '/api/save_trainings?complexFacilityId='+ complexFacilityId,
         { method: 'POST', headers: {
           'Content-Type':'application/json',
           // 'Authorization' : token
@@ -105,10 +109,21 @@ function TrainingTable() {
       .catch(err => console.error(err))
     }
      
+    const fetchComplexFacility = async (url) => {
+      try {
+        const response = await axios.get(url);
+        return response.data.facilityType;
+      } catch (error) {
+        console.error('Error fetching complex facility:', error);
+        return 'N/A';
+      }
+    };
+
+
     const columns = [
-        {field: 'trainingDateTime', headerName: 'Дата и время проведения', width: 300},
-        {field: 'cost', headerName: 'Стоимость (бел.руб.)', width: 300},
-        {field: 'complexFacility', headerName: 'Место проведения', width: 400},
+      {field: 'trainingDateTime', headerName: 'Дата и время проведения', width: 300},
+      {field: 'cost', headerName: 'Стоимость (бел.руб.)', width: 300},
+      {field: 'complexFacility', headerName: 'Место проведения', width: 400},
       {
         field: '_links.training.href', 
         headerName: '', 
@@ -130,6 +145,21 @@ function TrainingTable() {
       }
     ];
     
+    useEffect(() => {
+      const updateRows = async () => {
+        const updatedRows = await Promise.all(trainings.map(async training => ({
+          id: training._links.self.href,
+          trainingDateTime: training.trainingDateTime,
+          cost: training.cost,
+          complexFacility: await fetchComplexFacility(training._links.complexFacility.href),
+        })));
+        setRows(updatedRows);
+      };
+  
+      updateRows();
+    }, [trainings]);
+
+
   return (
       <main className='info_pages_body'>
       <h2>Тренировки</h2>
@@ -138,9 +168,9 @@ function TrainingTable() {
       <div className="container" style={{ height: 400, width: "100%"}}>
         <DataGrid localeText={ruRU.components.MuiDataGrid.defaultProps.localeText} className="grid_component" 
           columns={columns} 
-          rows={trainings} 
+          rows={rows} 
           disableSelectionOnClick={true}
-          getRowId={row => row._links.self.href}
+          getRowId={row => row.id}
           components={{ Toolbar: CustomToolbar }}
         />
         <Snackbar
