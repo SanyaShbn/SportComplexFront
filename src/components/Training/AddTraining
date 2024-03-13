@@ -15,11 +15,12 @@ import '../CSS/table.css';
 
 
 function AddTraining(props){
-  const [facilities, setFacilities] = useState([]);
+
   const [complexFacilityId, setComplexFacilityId] = useState([]);
+  const [facilities, setFacilities] = useState([]);
   const [open, setOpen] = useState(false);
   const [training, setTraining] = useState({
-    trainingDateTime: '', cost: '', complexFacility: ''
+    trainingDateTime: '', cost: ''
   });
 
   useEffect(() => {
@@ -28,11 +29,11 @@ function AddTraining(props){
 
   const fetchFacilities = () => {
       // const token = sessionStorage.getItem("jwt");
-      fetch(SERVER_URL + '/api/complexFacilities', {
+      fetch(SERVER_URL + '/api/view_facilities', {
         // headers: { 'Authorization' : token }
       })
       .then(response => response.json())
-      .then(data => setFacilities(data._embedded.complexFacilities))
+      .then(data => setFacilities(data))
       .catch(err => console.error(err));    
     }
 
@@ -43,12 +44,13 @@ function AddTraining(props){
   const handleClose = () => {
     setOpen(false);
     setTraining({
-        trainingDateTime: '', cost: '', complexFacility: ''
+        trainingDateTime: '', cost: ''
     })
   };
 
   const handleSave = () => {
-    props.addTraining(training, 2);
+    console.log(complexFacilityId);
+    props.addTraining(training, complexFacilityId);
     handleClose();
   }
 
@@ -80,13 +82,14 @@ function AddTraining(props){
             <FormControl fullWidth>
             <InputLabel>Место проведения</InputLabel>
              <Select
-             name="complexFacility"
+             name='complexFacility'
              autoFocus variant="standard"
-             label="Место проведения">
-             {/* {facilities.map(facility => (
-               <MenuItem onClick={training.setComplexFacility} key={facility.idComplexFacility}
+             label="Место проведения"
+             onChange={(event) => { setComplexFacilityId(event.target.value) }}>
+             {facilities.map(facility => (
+               <MenuItem key={facility.idComplexFacility}
                 value={facility.idComplexFacility}>{facility.facilityType}</MenuItem>
-             ))} */}
+             ))}
             </Select>
             </FormControl>
         </Stack>
