@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -7,20 +7,37 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 import Select from '@mui/material/Select';
-import {FormControl, InputLabel } from '@mui/material';
+import { SERVER_URL } from '../../constants.js';
+import {FormControl, InputLabel, MenuItem} from '@mui/material';
 import InputAdornment from '@mui/material/InputAdornment';
 
 function EditTraining(props) {
+
+  const [complexFacilityId, setComplexFacilityId] = useState([]);
+  const [facilities, setFacilities] = useState([]);
   const [open, setOpen] = useState(false);
   const [training, setTraining] = useState({
-    trainingDateTime: '', cost: '', complexFacility: ''
+    trainingDateTime: '', cost: ''
   });
     
+  useEffect(() => {
+    fetchFacilities();
+  }, []);
+
+  const fetchFacilities = () => {
+      // const token = sessionStorage.getItem("jwt");
+      fetch(SERVER_URL + '/api/view_facilities', {
+        // headers: { 'Authorization' : token }
+      })
+      .then(response => response.json())
+      .then(data => setFacilities(data))
+      .catch(err => console.error(err));    
+    }
+
   const handleClickOpen = () => {
     setTraining({
       trainingDateTime: props.data.row.trainingDateTime,
-      cost: props.data.row.cost,
-      complexFacility: props.data.row.complexFacility,
+      cost: props.data.row.cost
      })      
     setOpen(true);
   }
@@ -35,7 +52,7 @@ function EditTraining(props) {
   }
  
   const handleSave = () => {
-    props.updateTraining(training, props.data.id);
+    props.updateTraining(training, props.data.id, complexFacilityId);
     handleClose();
   }
 
@@ -64,11 +81,14 @@ function EditTraining(props) {
             <FormControl fullWidth>
             <InputLabel>Место проведения</InputLabel>
              <Select
-              name="complexFacility"
-              value={training.complexFacility}
-              autoFocus variant="standard"
-              label="Место проведения"
-              onChange={handleChange}>
+             name='complexFacility'
+             autoFocus variant="standard"
+             label="Место проведения"
+             onChange={(event) => { setComplexFacilityId(event.target.value) }}>
+             {facilities.map(facility => (
+               <MenuItem key={facility.idComplexFacility}
+                value={facility.idComplexFacility}>{facility.facilityType}</MenuItem>
+             ))}
             </Select>
             </FormControl>
         </Stack>
