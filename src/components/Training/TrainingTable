@@ -63,7 +63,6 @@ function TrainingTable() {
     }
     const addTraining = (training, complexFacilityId) => {
 
-      console.log(complexFacilityId);
       // const token = sessionStorage.getItem("jwt");
 
       fetch(SERVER_URL + '/api/save_trainings?complexFacilityId='+ complexFacilityId,
@@ -85,11 +84,11 @@ function TrainingTable() {
     }
   
 
-    const updateTraining = (training, link) => {
+    const updateTraining = (training, link, complexFacilityId) => {
 
       // const token = sessionStorage.getItem("jwt");
 
-      fetch(link,
+      fetch(link + '?complexFacilityId='+ complexFacilityId,
         { 
           method: 'PUT', 
           headers: {
