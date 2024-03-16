@@ -36,8 +36,8 @@ function Sidebar({openSidebarToggle, OpenSidebar}) {
                 </a>
             </li>
             <li className='sidebar-list-item'>
-                <a href="test">
-                    <BsFillPersonVcardFill className='icon'/> Клиенты(Тест)
+                <a href="clients">
+                    <BsFillPersonVcardFill className='icon'/> Клиенты
                 </a>
             </li>
             <li className='sidebar-list-item'>
