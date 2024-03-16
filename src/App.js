@@ -34,6 +34,7 @@ import ServiceEmployeesPage from './components/Employees/ServiceEmployeesPage'
 import ComplexfacilitiesPage from './components/ComplexFacility/ComplexFacilitiesPage'
 import EmployeeFacilityPage from './components/ServiceEmployee_ComplexFacility/EmployeeFacilityPage';
 import TrainingPage from './components/Training/TrainingsPage';
+import ClientsPage from './components/Client/ClientsPage';
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
           <Route path="service_employees" element={<ServiceEmployeesPage />} />
           <Route path="complex_facilities" element={<ComplexfacilitiesPage />} />
           <Route path="trainings" element={<TrainingPage />} />
+          <Route path="clients" element={<ClientsPage  />} />
           <Route path="test" element={<EmployeeFacilityPage  />} />
           <Route path="main" element={<Main />} />
       </Routes>
