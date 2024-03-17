@@ -29,25 +29,27 @@ import {
   Routes,
   Route,
 } from 'react-router-dom';
-import Main from './components/MainPage/Main'
-import ServiceEmployeesPage from './components/Employees/ServiceEmployeesPage'
-import ComplexfacilitiesPage from './components/ComplexFacility/ComplexFacilitiesPage'
-import EmployeeFacilityPage from './components/ServiceEmployee_ComplexFacility/EmployeeFacilityPage';
-import TrainingPage from './components/Training/TrainingsPage';
-import ClientsPage from './components/Client/ClientsPage';
+// import Main from './components/MainPage/Main'
+// import ServiceEmployeesPage from './components/Employees/ServiceEmployeesPage'
+// import ComplexfacilitiesPage from './components/ComplexFacility/ComplexFacilitiesPage'
+// import EmployeeFacilityPage from './components/ServiceEmployee_ComplexFacility/EmployeeFacilityPage';
+// import TrainingPage from './components/Training/TrainingsPage';
+// import ClientsPage from './components/Client/ClientsPage';
+import Dashboard from './components/MainPage/Dashboard';
 
 function App() {
   return (
     <div>
       <BrowserRouter>
       <Routes>
-          <Route path="/" element={<Main />} />
-          <Route path="service_employees" element={<ServiceEmployeesPage />} />
+          <Route path="dashboard/*" element={<Dashboard/>} />
+          {/* <Route path="service_employees" element={<ServiceEmployeesPage />} />
           <Route path="complex_facilities" element={<ComplexfacilitiesPage />} />
           <Route path="trainings" element={<TrainingPage />} />
           <Route path="clients" element={<ClientsPage  />} />
           <Route path="test" element={<EmployeeFacilityPage  />} />
-          <Route path="main" element={<Main />} />
+          <Route path="main" element={<Main />} /> */}
+           <Route path="*" element={<Dashboard/>} />
       </Routes>
     </BrowserRouter>
     </div>
