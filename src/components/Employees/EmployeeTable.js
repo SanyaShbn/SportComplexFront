@@ -1,6 +1,6 @@
 
 import React,  { useEffect, useState } from 'react';
-import { SERVER_URL } from '../../constants.js';
+import { SERVER_URL, StyledDataGrid } from '../../constants.js';
 import {DataGrid, ruRU, gridClasses} from '@mui/x-data-grid';
 import {GridToolbarContainer} from '@mui/x-data-grid';
 import {GridToolbarExport} from '@mui/x-data-grid';
@@ -156,7 +156,7 @@ const EmployeeTable = ({ setSelectedLink, link }) => {
     <React.Fragment>
       <AddEmployee addEmployee={addEmployee} />
       <div className="container" style={{ height: 400, width: "100%"}}>
-        <DataGrid localeText={ruRU.components.MuiDataGrid.defaultProps.localeText} className="grid_component" 
+        <StyledDataGrid localeText={ruRU.components.MuiDataGrid.defaultProps.localeText} className="grid_component" 
           columns={columns} 
           rows={employees} 
           disableSelectionOnClick={true}
