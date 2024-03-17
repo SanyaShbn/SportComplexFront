@@ -314,10 +314,13 @@ body {
     }
   }
   
-  /* Extra Small <= 576px */
-  
-  @media screen and (max-width: 576px) {
-    .hedaer-left {
-      display: none;
+    @media screen and (max-width: 600px) {
+    .system_logo{
+        height: 40px;
+        width: 40px;
     }
+    .company_title{
+      font-size: 28px;
+    }
+
   }
