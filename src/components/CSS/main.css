@@ -119,9 +119,8 @@ body {
 }
 
 .system_logo{
-	position: absolute;
-    top: 5px;
-    left: 30px;
+	position: relative;
+    top: 3px;
     height: 50px;
     width: 50px;
 }
@@ -135,9 +134,12 @@ body {
   }
   
   .company_title{
+  position: relative;
 	font-family: "Pacifico", bold;
 	color: white;
 	font-size: 36px;
+  left: 5px;
+  bottom: 10px;
 }
 
   .sidebar-title > span {
