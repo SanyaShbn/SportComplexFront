@@ -1,14 +1,14 @@
 
 import React,  { useEffect, useState } from 'react';
 import { SERVER_URL } from '../../constants.js';
-import {DataGrid, ruRU} from '@mui/x-data-grid';
+import {DataGrid, ruRU, gridClasses} from '@mui/x-data-grid';
 import {GridToolbarContainer} from '@mui/x-data-grid';
 import {GridToolbarExport} from '@mui/x-data-grid';
-import {gridClasses } from '@mui/x-data-grid';
-import Snackbar from '@mui/material/Snackbar';
+import {Snackbar, Box, Typography} from '@mui/material';
 import '../CSS/employeeCSS.css';
 import '../CSS/table.css';
 import AddEmployee from './AddEmployee';
+import { grey } from '@mui/material/colors';
 import EditEmployee from './EditEmployee';
 
 function CustomToolbar() {
@@ -19,7 +19,11 @@ function CustomToolbar() {
   );
 }
 
-function EmployeeTable() {
+const EmployeeTable = ({ setSelectedLink, link }) => {
+
+  useEffect(() => {
+    setSelectedLink(link);
+  }, []);
 
     const [employees, setEmployees] = useState([]);
     const [open, setOpen] = useState(false);
@@ -104,28 +108,6 @@ function EmployeeTable() {
       })
       .catch(err => console.error(err))
     }
-     
-    // const updateButton = [
-    //   {
-    //     field: '_links.serviceEmployee.href', 
-    //     headerName: '', 
-    //     sortable: false,
-    //     filterable: false,
-    //     renderCell: row => <EditEmployee 
-    //                           data={row} 
-    //                           updateCar={updateEmployee} />
-    //   }
-    // ]
-    // const deleteButton = [
-    //   {
-    //     field: '_links.self.href', 
-    //     headerName: '', 
-    //     sortable: false,
-    //     filterable: false,
-    //     renderCell: row => 
-    //       <button className='shine-button' onClick={() => onDelClick(row.id)}> </button>
-    //   }
-    // ]
     
     const columns = [
       {field: 'firstName', headerName: 'Имя', width: 100},
@@ -157,14 +139,20 @@ function EmployeeTable() {
     ];
     
   return (
-      <main className='info_pages_body'>
-      {/* <div className="info_pages_nav">
-        <a href="/admin_main" className="info_pages_navigation_element">Главная страница</a>
-        <a href="" className="info_pages_navigation_element">Клиенты</a>
-        <a href="" className="info_pages_navigation_element">Сооружения комплекса</a>
-      </div> */}
-      <h1>Сотрудники спортивно-оздоровительного комплекса</h1>
-      <h2>Сотрудники, зарегестрированные в системе</h2>
+    <Box
+    sx={{
+      height: 400,
+      width: '100%',
+    }}
+  >
+    <Typography
+      variant="h4"
+      component="h4"
+      sx={{ textAlign: 'center', mt: 3, mb: 3 }}
+    >
+      Сотрудники спортивно-оздоровительного комплекса
+    </Typography>
+    <main className='info_pages_body'>
     <React.Fragment>
       <AddEmployee addEmployee={addEmployee} />
       <div className="container" style={{ height: 400, width: "100%"}}>
@@ -174,7 +162,12 @@ function EmployeeTable() {
           disableSelectionOnClick={true}
           getRowId={row => row._links.self.href}
           components={{ Toolbar: CustomToolbar }}
-        />
+          sx={{
+            [`& .${gridClasses.row}`]: {
+              bgcolor: (theme) =>
+                theme.palette.mode === 'light' ? grey[200] : grey[900],
+            },
+          }}/>
         <Snackbar
           open={open}
           autoHideDuration={2000}
@@ -184,30 +177,7 @@ function EmployeeTable() {
       </div>
     </React.Fragment>
     </main>
-  // <div>
-  //    <table>
-  //      <thead>
-  //        <tr>
-  //          <th>ID</th>
-  //          <th>Имя</th>
-  //          <th>Фамилия</th>
-  //          <th>Отчество</th>
-  //          <th>Номер</th>
-  //          <th>Дата рождения</th>
-  //          <th>Оклад(бел.руб.)</th>
-  //          <th>Премиальные(бел.руб.)</th>
-  //        </tr>
-  //      </thead>
-  //      <tbody>
-  //        <tr>
-  //            {employees}
-  //            <td>{updateButton}</td>
-  //            <td>{deleteButton}</td>
-  //        </tr>
-  //      </tbody>
-  //   </table>
-  //   <AddEmployee />
-  //   </div>
+    </Box>
   );
 }
 
