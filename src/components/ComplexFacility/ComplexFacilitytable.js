@@ -5,11 +5,12 @@ import {DataGrid, ruRU} from '@mui/x-data-grid';
 import {GridToolbarContainer} from '@mui/x-data-grid';
 import {GridToolbarExport} from '@mui/x-data-grid';
 import {gridClasses } from '@mui/x-data-grid';
-import Snackbar from '@mui/material/Snackbar';
+import {Snackbar, Box, Typography} from '@mui/material';
 import '../CSS/employeeCSS.css';
 import '../CSS/table.css';
 import AddFacility from './AddFacility.js';
 import EditFacility from './EditFacility.js';
+import { grey } from '@mui/material/colors';
 
 function CustomToolbar() {
   return (
@@ -19,7 +20,12 @@ function CustomToolbar() {
   );
 }
 
-function ComplexFacilityTable() {
+const ComplexFacilityTable = ({ setSelectedLink, link }) => {
+
+  useEffect(() => {
+    setSelectedLink(link);
+  }, []);
+
 
     const [facilities, setFacilities] = useState([]);
     const [open, setOpen] = useState(false);
@@ -131,9 +137,20 @@ function ComplexFacilityTable() {
     ];
     
   return (
+    <Box
+    sx={{
+      height: 400,
+      width: '100%',
+    }}
+  >
+    <Typography
+      variant="h4"
+      component="h4"
+      sx={{ textAlign: 'center', mt: 3, mb: 3 }}
+    >
+      Сооружения спортивно-оздоровительного комплекса
+    </Typography>
       <main className='info_pages_body'>
-      <h1>Сооружения спортивно-оздоровительного комплекса</h1>
-      <h2>Сооружения, зарегестрированные в системе</h2>
     <React.Fragment>
       <AddFacility addFacility={addFacility} />
       <div className="container" style={{ height: 400, width: "100%"}}>
@@ -143,6 +160,12 @@ function ComplexFacilityTable() {
           disableSelectionOnClick={true}
           getRowId={row => row._links.self.href}
           components={{ Toolbar: CustomToolbar }}
+          sx={{
+            [`& .${gridClasses.row}`]: {
+              bgcolor: (theme) =>
+                theme.palette.mode === 'light' ? grey[200] : grey[900],
+            },
+          }}
         />
         <Snackbar
           open={open}
@@ -153,6 +176,7 @@ function ComplexFacilityTable() {
       </div>
     </React.Fragment>
     </main>
+    </Box>
   );
 }
 
