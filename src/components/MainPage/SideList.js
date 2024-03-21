@@ -1,4 +1,4 @@
-import {BsFillPersonVcardFill, BsPeopleFill} from "react-icons/bs"
+import {BsFillPersonVcardFill, BsPeopleFill, BsReception4} from "react-icons/bs"
 import {IoIosFitness} from "react-icons/io"
 import {MdOutlineSportsGymnastics, MdCardMembership, MdAttachMoney} from "react-icons/md"
 import { FaTruckLoading } from "react-icons/fa"
@@ -30,6 +30,7 @@ import EmployeeTable from '../Employees/EmployeeTable'
 import ClientTable from "../Client/ClientTable"
 import ComplexFacilityTable from "../ComplexFacility/ComplexFacilitytable"
 import TrainingTable from "../Training/TrainingTable"
+import ClientTrainingTable from "../Reception/ClientTrainingTable"
   
   const drawerWidth = 250;
   
@@ -135,6 +136,12 @@ import TrainingTable from "../Training/TrainingTable"
             title: 'Финансы',
             icon: <MdAttachMoney />,
             link: '',
+          },
+          {
+            title: 'Рецепция',
+            icon: <BsReception4 />,
+            link: 'client_trainings',
+            component: <ClientTrainingTable {...{ setSelectedLink, link: 'client_trainings' }}/>,
           },
       ],
       []
