@@ -92,7 +92,7 @@ const ClientTable = ({ setSelectedLink, link }) => {
       {field: 'surName', headerName: 'Фамилия', width: 150},
       {field: 'patrSurName', headerName: 'Отчество', width: 150},
       {field: 'phoneNumber', headerName: 'Номер телефона', width: 200},
-      {field: 'email', headerName: 'Дата рождения', width: 250},
+      {field: 'email', headerName: 'Email', width: 250},
       {
         field: '_links.employee.href', 
         headerName: '', 
