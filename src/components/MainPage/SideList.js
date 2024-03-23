@@ -30,7 +30,8 @@ import EmployeeTable from '../Employees/EmployeeTable'
 import ClientTable from "../Client/ClientTable"
 import ComplexFacilityTable from "../ComplexFacility/ComplexFacilitytable"
 import TrainingTable from "../Training/TrainingTable"
-import ClientTrainingTable from "../Reception/ClientTrainingTable"
+import SportComplexMembershipTable from "../SportComplexMembership/SportComplexMembershipTable"
+import ReceptionButtonsList from "./ReceptionButtonsList"
   
   const drawerWidth = 250;
   
@@ -126,11 +127,13 @@ import ClientTrainingTable from "../Reception/ClientTrainingTable"
             title: 'Акции',
             icon: <CiDiscount1 />,
             link: '',
+            
           },
           {
             title: 'Абонементы',
             icon: <MdCardMembership />,
-            link: '',
+            link: 'memberships',
+            component: <SportComplexMembershipTable {...{ setSelectedLink, link: 'memberships' }}/>,
           },
           {
             title: 'Финансы',
@@ -140,13 +143,12 @@ import ClientTrainingTable from "../Reception/ClientTrainingTable"
           {
             title: 'Рецепция',
             icon: <BsReception4 />,
-            link: 'client_trainings',
-            component: <ClientTrainingTable {...{ setSelectedLink, link: 'client_trainings' }}/>,
+            link: 'reception/*',
+            component: <ReceptionButtonsList {...{ setSelectedLink, link: 'reception/*' }}/>,
           },
       ],
       []
     );
-  
     const navigate = useNavigate();
     return (
       <>
