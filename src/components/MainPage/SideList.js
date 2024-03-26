@@ -32,6 +32,7 @@ import ComplexFacilityTable from "../ComplexFacility/ComplexFacilitytable"
 import TrainingTable from "../Training/TrainingTable"
 import SportComplexMembershipTable from "../SportComplexMembership/SportComplexMembershipTable"
 import ReceptionButtonsList from "./ReceptionButtonsList"
+import { SERVER_URL } from '../../constants';
   
   const drawerWidth = 250;
   
@@ -83,6 +84,11 @@ import ReceptionButtonsList from "./ReceptionButtonsList"
   }));
   
   const SideList = ({ open, setOpen }) => {
+
+    const handleLogout = () => {
+      sessionStorage.setItem("jwt", "");
+      navigate("/", { replace: true })
+    }
   
     const [selectedLink, setSelectedLink] = useState('');
 
@@ -204,7 +210,7 @@ import ReceptionButtonsList from "./ReceptionButtonsList"
             )}
             <Tooltip title="Выйти" sx={{ mt: 1 }}>
               <IconButton>
-                <Logout />
+                <Logout onClick={handleLogout}/>
               </IconButton>
             </Tooltip>
           </Box>
