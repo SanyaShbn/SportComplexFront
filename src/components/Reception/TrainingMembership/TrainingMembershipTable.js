@@ -115,9 +115,14 @@ const TrainingMembershipTable = ({ setSelectedLink, link }) => {
     }
      
     const fetchTrainings = async (url) => {
+      const token = sessionStorage.getItem("jwt");
       try {
-        console.log(url)
-        const response = await axios.get(url);
+        const config = {
+          headers: {
+            'Authorization' : token
+          }
+        };
+        const response = await axios.get(url, config);
         let id = response.data._links.self.href;
         return id.slice(id.lastIndexOf("/") + 1);
       } catch (error) {
@@ -127,8 +132,14 @@ const TrainingMembershipTable = ({ setSelectedLink, link }) => {
     };
 
     const fetchMemberships = async (url) => {
-        try {
-          const response = await axios.get(url);
+         const token = sessionStorage.getItem("jwt");
+         try {
+         const config = {
+          headers: {
+            'Authorization' : token
+          }
+        };
+          const response = await axios.get(url, config);
           return response.data.name;
         } catch (error) {
           console.error('Error fetching memberships:', error);
