@@ -113,8 +113,14 @@ const ClientMembershipTable = ({ setSelectedButtonLink, link }) => {
     }
      
     const fetchMemberships = async (url) => {
-        try {
-          const response = await axios.get(url);
+         const token = sessionStorage.getItem("jwt");
+         try {
+         const config = {
+          headers: {
+            'Authorization' : token
+          }
+        };
+          const response = await axios.get(url, config);
           return response.data.name;
         } catch (error) {
           console.error('Error fetching memberships:', error);
@@ -123,8 +129,14 @@ const ClientMembershipTable = ({ setSelectedButtonLink, link }) => {
     };
 
     const fetchClients = async (url) => {
-        try {
-          const response = await axios.get(url);
+         const token = sessionStorage.getItem("jwt");
+         try {
+         const config = {
+          headers: {
+            'Authorization' : token
+          }
+        };
+          const response = await axios.get(url, config);
           return response.data.surName + " " + response.data.firstName + " " + response.data.patrSurName + 
           " (" + response.data.phoneNumber + ")";
         } catch (error) {
