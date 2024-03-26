@@ -115,8 +115,14 @@ const TrainingTable = ({ setSelectedLink, link }) => {
     }
      
     const fetchComplexFacility = async (url) => {
+      const token = sessionStorage.getItem("jwt");
       try {
-        const response = await axios.get(url);
+        const config = {
+          headers: {
+            'Authorization' : token
+          }
+        };
+        const response = await axios.get(url, config);
         let id = response.data._links.self.href;
         return response.data.facilityType + " №" + id.slice(id.lastIndexOf("/") + 1);
       } catch (error) {
