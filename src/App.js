@@ -40,7 +40,9 @@ import Dashboard from './components/MainPage/Dashboard';
 function App() {
   return (
     <div>
-      <BrowserRouter>
+     <Loading/>
+     <Notification/>
+     <BrowserRouter>
       <Routes>
           <Route path="dashboard/*" element={<Dashboard/>} />
           {/* <Route path="service_employees" element={<ServiceEmployeesPage />} />
@@ -49,7 +51,7 @@ function App() {
           <Route path="clients" element={<ClientsPage  />} />
           <Route path="test" element={<EmployeeFacilityPage  />} />
           <Route path="main" element={<Main />} /> */}
-           <Route path="*" element={<Dashboard/>} />
+          <Route path="/" element={[<NavBar/>, <Login/>]} />
       </Routes>
     </BrowserRouter>
     </div>
