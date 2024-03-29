@@ -2,7 +2,7 @@
 import React,  { useEffect, useState } from 'react';
 import axios from 'axios';
 import { SERVER_URL, StyledDataGrid } from '../../constants.js';
-import {DataGrid, ruRU} from '@mui/x-data-grid';
+import {ruRU} from '@mui/x-data-grid';
 import {GridToolbarContainer} from '@mui/x-data-grid';
 import {GridToolbarExport} from '@mui/x-data-grid';
 import {gridClasses } from '@mui/x-data-grid';
@@ -12,6 +12,8 @@ import '../CSS/table.css';
 import AddTraining from './AddTraining';
 import EditTraining from './EditTraining';
 import { grey } from '@mui/material/colors';
+import { useValue } from '../../context/ContextProvider';
+import { jwtDecode } from 'jwt-decode';
 
 function CustomToolbar() {
   return (
@@ -27,32 +29,52 @@ const TrainingTable = ({ setSelectedLink, link }) => {
     setSelectedLink(link);
   }, []);
 
-
+    const {
+      dispatch,
+    } = useValue();
     const [trainings, setTrainings] = useState([]);
     const [open, setOpen] = useState(false);
     const [rows, setRows] = useState([]);
+    const token = sessionStorage.getItem("jwt");
+      
+    const decodedToken = jwtDecode(token);
+
+    const roles = decodedToken.roles
+
+
+    const showError = () => {
+      dispatch({
+        type: 'UPDATE_ALERT',
+        payload: {
+          open: true,
+          severity: 'error',
+          message: 'Ошибка! Не соответствующий уровень доступа',
+        },});
+    }
   
     useEffect(() => {
       fetchTrainings();
     }, []);
   
     const fetchTrainings = () => {
-      // const token = sessionStorage.getItem("jwt");
       fetch(SERVER_URL + '/api/trainings', {
-        // headers: { 'Authorization' : token }
+        headers: { 'Authorization' : token }
       })
       .then(response => response.json())
       .then(data => setTrainings(data._embedded.trainings))
       .catch(err => console.error(err));    
-    }
+  }
     const onDelClick = (url) => {
+      
+      if(roles.toString()!=="ADMIN"){
+        showError()
+      }
+      else{
       if (window.confirm("ВЫ уверены, что хотите удалить запись о тренировке?")) {
-
-        // const token = sessionStorage.getItem("jwt");
 
         fetch(url, {
           method: 'DELETE',
-          // headers: { 'Authorization' : token }
+          headers: { 'Authorization' : token }
           })
         .then(response => {
           if (response.ok) {
@@ -64,17 +86,16 @@ const TrainingTable = ({ setSelectedLink, link }) => {
           }
         })
         .catch(err => console.error(err))
+      }
 
       }
     }
     const addTraining = (training, complexFacilityId) => {
 
-      // const token = sessionStorage.getItem("jwt");
-
       fetch(SERVER_URL + '/api/save_trainings?complexFacilityId='+ complexFacilityId,
         { method: 'POST', headers: {
           'Content-Type':'application/json',
-          // 'Authorization' : token
+          'Authorization' : token
         },
         body: JSON.stringify(training)
       })
@@ -92,14 +113,12 @@ const TrainingTable = ({ setSelectedLink, link }) => {
 
     const updateTraining = (training, link, complexFacilityId) => {
 
-      // const token = sessionStorage.getItem("jwt");
-
       fetch(link + '?complexFacilityId='+ complexFacilityId,
         { 
           method: 'PUT', 
           headers: {
           'Content-Type':  'application/json',
-          // 'Authorization' : token
+          'Authorization' : token
         },
         body: JSON.stringify(training)
       })
@@ -115,7 +134,6 @@ const TrainingTable = ({ setSelectedLink, link }) => {
     }
      
     const fetchComplexFacility = async (url) => {
-      const token = sessionStorage.getItem("jwt");
       try {
         const config = {
           headers: {
