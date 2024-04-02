@@ -6,16 +6,19 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Select from '@mui/material/Select';
-import { SERVER_URL } from '../../constants.js';
+import { SERVER_URL } from '../../../constants.js';
 import {FormControl, InputLabel, MenuItem} from '@mui/material';
 
-function EditTraining(props) {
+function EditClientTraining(props) {
 
     const [clientId, setClientId] = useState([]);
     const [trainingId, setTrainingId] = useState([]);
     const [clients, setClients] = useState([]);
     const [trainings, setTrainings] = useState([]);
     const [open, setOpen] = useState(false);
+    const [client_training, setClientTraining] = useState({
+      status: '', client: '', training: ''
+    });
     
   useEffect(() => {
     fetchTrainings();
@@ -23,19 +26,19 @@ function EditTraining(props) {
   }, []);
 
   const fetchTrainings = () => {
-    // const token = sessionStorage.getItem("jwt");
-    fetch(SERVER_URL + '/api/trainings', {
-      // headers: { 'Authorization' : token }
+    const token = sessionStorage.getItem("jwt");
+    fetch(SERVER_URL + '/api/view_trainings', {
+      headers: { 'Authorization' : token }
     })
     .then(response => response.json())
-    .then(data => setTrainings(data._embedded.trainings))
+    .then(data => setTrainings(data))
     .catch(err => console.error(err));    
   }
 
   const fetchClients = () => {
-      // const token = sessionStorage.getItem("jwt");
+      const token = sessionStorage.getItem("jwt");
       fetch(SERVER_URL + '/api/view_clients', {
-        // headers: { 'Authorization' : token }
+        headers: { 'Authorization' : token }
       })
       .then(response => response.json())
       .then(data => setClients(data))
@@ -43,16 +46,35 @@ function EditTraining(props) {
     }
 
   const handleClickOpen = () => {  
+    let id_client = props.data.row.client.slice(props.data.row.client.indexOf("№") + 1, props.data.row.client.indexOf(":"))
+    let id_training = props.data.row.training.slice(props.data.row.training.indexOf("№") + 1, props.data.row.training.indexOf("."))
+    setClientId(parseInt(id_client))
+    setTrainingId(parseInt(id_training))
+    setClientTraining({
+      status: props.data.row.status,
+      client: parseInt(id_client),
+      training: parseInt(id_training),
+     })     
     setOpen(true);
   }
 
   const handleClose = () => {
     setOpen(false);
   };
+
+  const handleChangeTraining = (event) => {
+    setTrainingId(event.target.value) 
+    setClientTraining({...client_training, 
+      [event.target.name]: event.target.value});
+  }
+  const handleChangeClient = (event) => {
+    setClientId(event.target.value)
+    setClientTraining({...client_training, 
+      [event.target.name]: event.target.value});
+  }
  
   const handleSave = () => {
-    console.log(props.data)
-    props.updateClientTraining(props.data.id, trainingId.slice(trainingId.lastIndexOf("/") + 1), clientId);
+    props.updateClientTraining(props.data.id, trainingId, clientId);
     handleClose();
   }
 
@@ -71,11 +93,12 @@ function EditTraining(props) {
              name='training'
              autoFocus variant="standard"
              label="Тренировки"
-             onChange={(event) => { setTrainingId(event.target.value) }}>
+             value={client_training.training}
+             onChange={handleChangeTraining}>
              {trainings.map(training => (
-               <MenuItem key={training._links.self.href}
-                value={training._links.self.href}>{"Тренировка № " + training._links.self.href.slice(training._links.self.href.lastIndexOf("/") + 1)
-                  + " дата и время проведения:" + training.trainingDateTime}</MenuItem>
+               <MenuItem key={training.idTraining}
+                value={training.idTraining}>{"Тренировка №" + training.idTraining +
+                ". Место проведения: " + training.complexFacility.facilityType}</MenuItem>
              ))}
             </Select>
             </FormControl>
@@ -85,10 +108,11 @@ function EditTraining(props) {
              name='client'
              autoFocus variant="standard"
              label="Клиенты"
-             onChange={(event) => { setClientId(event.target.value) }}>
+             value={client_training.client}
+             onChange={handleChangeClient}>
              {clients.map(client => (
                <MenuItem key={client.idClient}
-                value={client.idClient}>{client.surName + " " + client.firstName + " " + client.patrSurName + 
+                value={client.idClient}>{"Клиент №" + client.idClient + ": " + client.surName + " " + client.firstName + " " + client.patrSurName + 
                 " (" + client.phoneNumber + ")"}</MenuItem>
              ))}
             </Select>
@@ -104,4 +128,4 @@ function EditTraining(props) {
   );  
 }
 
-export default EditTraining;
+export default EditClientTraining;
