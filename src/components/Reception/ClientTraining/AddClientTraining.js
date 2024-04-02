@@ -7,9 +7,9 @@ import Select from '@mui/material/Select';
 import { FormControl, InputLabel, MenuItem } from '@mui/material';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
-import { SERVER_URL } from '../../constants.js';
-import '../CSS/employeeCSS.css';
-import '../CSS/table.css';
+import { SERVER_URL } from '../../../constants.js';
+import '../../CSS/employeeCSS.css';
+import '../../CSS/table.css';
 
 
 function AddClientTraining(props){
@@ -26,19 +26,19 @@ function AddClientTraining(props){
   }, []);
 
   const fetchTrainings = () => {
-      // const token = sessionStorage.getItem("jwt");
-      fetch(SERVER_URL + '/api/trainings', {
-        // headers: { 'Authorization' : token }
+      const token = sessionStorage.getItem("jwt");
+      fetch(SERVER_URL + '/api/view_trainings', {
+        headers: { 'Authorization' : token }
       })
       .then(response => response.json())
-      .then(data => setTrainings(data._embedded.trainings))
+      .then(data => setTrainings(data))
       .catch(err => console.error(err));    
     }
 
     const fetchClients = () => {
-        // const token = sessionStorage.getItem("jwt");
+        const token = sessionStorage.getItem("jwt");
         fetch(SERVER_URL + '/api/view_clients', {
-          // headers: { 'Authorization' : token }
+          headers: { 'Authorization' : token }
         })
         .then(response => response.json())
         .then(data => setClients(data))
@@ -54,7 +54,7 @@ function AddClientTraining(props){
   };
 
   const handleSave = () => {
-    props.addClientTraining(trainingId.slice(trainingId.lastIndexOf("/") + 1), clientId);
+    props.addClientTraining(trainingId, clientId);
     handleClose();
   }
 
@@ -76,9 +76,9 @@ function AddClientTraining(props){
              label="Тренировки"
              onChange={(event) => { setTrainingId(event.target.value) }}>
              {trainings.map(training => (
-               <MenuItem key={training._links.self.href}
-                value={training._links.self.href}>{"Тренировка № " + training._links.self.href.slice(training._links.self.href.lastIndexOf("/") + 1)
-                  + " дата и время проведения:" + training.trainingDateTime}</MenuItem>
+               <MenuItem key={training.idTraining}
+                value={training.idTraining}>{"Тренировка №" + training.idTraining
+                + ". Место проведения: " + training.complexFacility.facilityType}</MenuItem>
              ))}
             </Select>
             </FormControl>
@@ -91,7 +91,7 @@ function AddClientTraining(props){
              onChange={(event) => { setClientId(event.target.value) }}>
              {clients.map(client => (
                <MenuItem key={client.idClient}
-                value={client.idClient}>{client.surName + " " + client.firstName + " " + client.patrSurName + 
+                value={client.idClient}>{"Клиент №" + client.idClient + ": " + client.surName + " " + client.firstName + " " + client.patrSurName + 
                 " (" + client.phoneNumber + ")"}</MenuItem>
              ))}
             </Select>
