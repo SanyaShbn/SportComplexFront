@@ -37,9 +37,9 @@ const ClientMembershipTable = ({ setSelectedButtonLink, link }) => {
     }, []);
   
     const fetchClientMemberships = () => {
-      // const token = sessionStorage.getItem("jwt");
+      const token = sessionStorage.getItem("jwt");
       fetch(SERVER_URL + '/api/clientMemberships', {
-        // headers: { 'Authorization' : token }
+        headers: { 'Authorization' : token }
       })
       .then(response => response.json())
       .then(data => setClientMemberships(data._embedded.clientMemberships))
@@ -48,11 +48,11 @@ const ClientMembershipTable = ({ setSelectedButtonLink, link }) => {
     const onDelClick = (id) => {
       if (window.confirm("ВЫ уверены, что хотите удалить запись о продаже абонемента?")) {
 
-        // const token = sessionStorage.getItem("jwt");
+        const token = sessionStorage.getItem("jwt");
 
         fetch(SERVER_URL + '/api/deleteClientMemberships?id=' + id.slice(id.lastIndexOf("/") + 1), {
           method: 'DELETE',
-          // headers: { 'Authorization' : token }
+          headers: { 'Authorization' : token }
           })
         .then(response => {
           if (response.ok) {
@@ -69,12 +69,12 @@ const ClientMembershipTable = ({ setSelectedButtonLink, link }) => {
     }
     const addClientMembership = (membershipId, clientId) => {
 
-      // const token = sessionStorage.getItem("jwt");
+      const token = sessionStorage.getItem("jwt");
 
       fetch(SERVER_URL + '/api/save_client_membership?membershipId=' + membershipId + "&clientId=" + clientId,
         { method: 'POST', headers: {
           'Content-Type':'application/json',
-          // 'Authorization' : token
+          'Authorization' : token
         },
       })
       .then(response => {
@@ -91,14 +91,14 @@ const ClientMembershipTable = ({ setSelectedButtonLink, link }) => {
 
     const updateClientMembership = (link, membershipId, clientId) => {
 
-      // const token = sessionStorage.getItem("jwt");
+      const token = sessionStorage.getItem("jwt");
 
       fetch(link + '?membershipId=' + membershipId + "&clientId=" + clientId ,
         { 
           method: 'PUT', 
           headers: {
           'Content-Type':  'application/json',
-          // 'Authorization' : token
+          'Authorization' : token
         },
       })
       .then(response => {
@@ -113,15 +113,16 @@ const ClientMembershipTable = ({ setSelectedButtonLink, link }) => {
     }
      
     const fetchMemberships = async (url) => {
-         const token = sessionStorage.getItem("jwt");
-         try {
-         const config = {
+      const token = sessionStorage.getItem("jwt");
+      try {
+        const config = {
           headers: {
             'Authorization' : token
           }
         };
           const response = await axios.get(url, config);
-          return response.data.name;
+          let id = response.data._links.self.href
+          return "Абонемент №" + id.slice(id.lastIndexOf("/") + 1) + ": " + response.data.name;
         } catch (error) {
           console.error('Error fetching memberships:', error);
           return 'N/A';
@@ -129,15 +130,16 @@ const ClientMembershipTable = ({ setSelectedButtonLink, link }) => {
     };
 
     const fetchClients = async (url) => {
-         const token = sessionStorage.getItem("jwt");
-         try {
-         const config = {
+      const token = sessionStorage.getItem("jwt");
+      try {
+        const config = {
           headers: {
             'Authorization' : token
           }
         };
           const response = await axios.get(url, config);
-          return response.data.surName + " " + response.data.firstName + " " + response.data.patrSurName + 
+          let id = response.data._links.self.href
+          return "Клиент №" + id.slice(id.lastIndexOf("/") + 1) + ": " + response.data.surName + " " + response.data.firstName + " " + response.data.patrSurName + 
           " (" + response.data.phoneNumber + ")";
         } catch (error) {
           console.error('Error fetching clients:', error);
@@ -147,8 +149,8 @@ const ClientMembershipTable = ({ setSelectedButtonLink, link }) => {
 
 
     const columns = [
-      {field: 'sportComplexMembership', headerName: 'Имя клиента, записываемого на тренировку', width: 600},
-      {field: 'client', headerName: 'Код тренировки', width: 580},
+      {field: 'sportComplexMembership', headerName: 'Наименование приобретаемого абонемента', width: 600},
+      {field: 'client', headerName: 'Клиент, приобретающий абонемент', width: 580},
       {
         field: '_links.client_membership.href', 
         headerName: '', 
@@ -207,6 +209,12 @@ const ClientMembershipTable = ({ setSelectedButtonLink, link }) => {
           rows={rows} 
           disableSelectionOnClick={true}
           getRowId={row => row.id}
+          {...rows}
+          initialState={{
+            ...rows.initialState,
+            pagination: { paginationModel: { pageSize: 5 } },
+          }}
+          pageSizeOptions={[5, 10, 25]}
           components={{ Toolbar: CustomToolbar }}
           sx={{
             [`& .${gridClasses.row}`]: {
