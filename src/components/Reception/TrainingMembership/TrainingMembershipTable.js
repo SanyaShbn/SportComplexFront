@@ -21,10 +21,10 @@ function CustomToolbar() {
   );
 }
 
-const TrainingMembershipTable = ({ setSelectedLink, link }) => {
+const TrainingMembershipTable = ({ setSelectedButtonLink, link }) => {
 
   useEffect(() => {
-    setSelectedLink(link);
+    setSelectedButtonLink(link);
   }, []);
 
 
@@ -37,9 +37,9 @@ const TrainingMembershipTable = ({ setSelectedLink, link }) => {
     }, []);
   
     const fetchTrainingMemberships = () => {
-      // const token = sessionStorage.getItem("jwt");
+      const token = sessionStorage.getItem("jwt");
       fetch(SERVER_URL + '/api/trainingMemberships', {
-        // headers: { 'Authorization' : token }
+        headers: { 'Authorization' : token }
       })
       .then(response => response.json())
       .then(data => setTrainingMemberships(data._embedded.trainingMemberships))
@@ -48,11 +48,11 @@ const TrainingMembershipTable = ({ setSelectedLink, link }) => {
     const onDelClick = (id) => {
       if (window.confirm("ВЫ уверены, что хотите удалить тренировки, входящие в абонемент?")) {
 
-        // const token = sessionStorage.getItem("jwt");
+        const token = sessionStorage.getItem("jwt");
 
         fetch(SERVER_URL + '/api/deleteTrainingMembership?id=' + id.slice(id.lastIndexOf("/") + 1), {
           method: 'DELETE',
-          // headers: { 'Authorization' : token }
+          headers: { 'Authorization' : token }
           })
         .then(response => {
           if (response.ok) {
@@ -69,12 +69,12 @@ const TrainingMembershipTable = ({ setSelectedLink, link }) => {
     }
     const addTrainingMembership = (membership, trainingId, membershipId) => {
 
-      // const token = sessionStorage.getItem("jwt");
+      const token = sessionStorage.getItem("jwt");
 
       fetch(SERVER_URL + '/api/save_training_membership?trainingId=' + trainingId + "&membershipId=" + membershipId,
         { method: 'POST', headers: {
           'Content-Type':'application/json',
-          // 'Authorization' : token
+          'Authorization' : token
         },
         body: JSON.stringify(membership)
       })
@@ -90,18 +90,17 @@ const TrainingMembershipTable = ({ setSelectedLink, link }) => {
     }
   
 
-    const updateTrainingMembership = (training_membership, link, trainingId, membershipId) => {
+    const updateTrainingMembership = (link, trainingId, membershipId, updatedVisitsAmount) => {
 
-      // const token = sessionStorage.getItem("jwt");
+      const token = sessionStorage.getItem("jwt");
 
-      fetch(link + '?trainingId=' + trainingId + "&membershipId=" + membershipId,
+      fetch(link + '?trainingId=' + trainingId + "&membershipId=" + membershipId + "&visitsAmount=" + updatedVisitsAmount,
         { 
           method: 'PUT', 
           headers: {
           'Content-Type':  'application/json',
-          // 'Authorization' : token
+          'Authorization' : token
         },
-        body: JSON.stringify(training_membership)
       })
       .then(response => {
         if (response.ok) {
@@ -123,24 +122,43 @@ const TrainingMembershipTable = ({ setSelectedLink, link }) => {
           }
         };
         const response = await axios.get(url, config);
+        let facility = await fetchTrainingFacilities(response.data._links.complexFacility.href)
         let id = response.data._links.self.href;
-        return id.slice(id.lastIndexOf("/") + 1);
+        return "Тренировка №" + id.slice(id.lastIndexOf("/") + 1) + ". Место проведения: "
+        + facility;
       } catch (error) {
         console.error('Error fetching trainings:', error);
         return 'N/A';
       }
     };
 
-    const fetchMemberships = async (url) => {
-         const token = sessionStorage.getItem("jwt");
-         try {
-         const config = {
+    const fetchTrainingFacilities = async (url) => {
+      const token = sessionStorage.getItem("jwt");
+      try {
+        const config = {
           headers: {
             'Authorization' : token
           }
         };
+        const response = await axios.get(url, config);
+        return response.data.facilityType;
+      } catch (error) {
+        console.error('Error fetching facilities:', error);
+        return 'N/A';
+      }
+    }
+
+    const fetchMemberships = async (url) => {
+      const token = sessionStorage.getItem("jwt");
+        try {
+          const config = {
+            headers: {
+              'Authorization' : token
+            }
+          };
           const response = await axios.get(url, config);
-          return response.data.name;
+          let id = response.data._links.self.href;
+          return "Абонемент №" + id.slice(id.lastIndexOf("/") + 1) + ": " + response.data.name;
         } catch (error) {
           console.error('Error fetching memberships:', error);
           return 'N/A';
@@ -149,9 +167,9 @@ const TrainingMembershipTable = ({ setSelectedLink, link }) => {
 
 
     const columns = [
-      {field: 'visitsAmount', headerName: 'Количество тренировок, входящих в услугу', width: 450},
-      {field: 'sportComplexMembership', headerName: 'Наименование приобретаемого абонемента', width: 450},
-      {field: 'training', headerName: 'Код тренировки', width: 300},
+      {field: 'visitsAmount', headerName: 'Количество тренировок, входящих в услугу', width: 370},
+      {field: 'sportComplexMembership', headerName: 'Наименование абонемента', width: 350},
+      {field: 'training', headerName: 'Тренировка', width: 450},
       {
         field: '_links.training_membership.href', 
         headerName: '', 
@@ -200,7 +218,7 @@ const TrainingMembershipTable = ({ setSelectedLink, link }) => {
       component="h5"
       sx={{ textAlign: 'center', mt: 3, mb: 3 }}
     >
-    Пакет тренировок  
+    Пакеты тренировок  
     </Typography>
       <main className='info_pages_body'>
     <React.Fragment>
@@ -211,6 +229,12 @@ const TrainingMembershipTable = ({ setSelectedLink, link }) => {
           rows={rows} 
           disableSelectionOnClick={true}
           getRowId={row => row.id}
+          {...rows}
+          initialState={{
+            ...rows.initialState,
+            pagination: { paginationModel: { pageSize: 5 } },
+          }}
+          pageSizeOptions={[5, 10, 25]}
           components={{ Toolbar: CustomToolbar }}
           sx={{
             [`& .${gridClasses.row}`]: {
@@ -223,7 +247,7 @@ const TrainingMembershipTable = ({ setSelectedLink, link }) => {
           open={open}
           autoHideDuration={2000}
           onClose={() => setOpen(false)}
-          message="Запись о тренировке удалена"
+          message="Запись о пакете тренировок удалена"
         />
       </div>
     </React.Fragment>
