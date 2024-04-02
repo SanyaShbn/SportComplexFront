@@ -213,6 +213,12 @@ const TrainingTable = ({ setSelectedLink, link }) => {
           rows={rows} 
           disableSelectionOnClick={true}
           getRowId={row => row.id}
+          {...trainings}
+          initialState={{
+            ...trainings.initialState,
+            pagination: { paginationModel: { pageSize: 5 } },
+          }}
+          pageSizeOptions={[5, 10, 25]}
           components={{ Toolbar: CustomToolbar }}
           sx={{
             [`& .${gridClasses.row}`]: {
