@@ -26,9 +26,9 @@ function AddClientMembership(props){
   }, []);
 
   const fetchClients = () => {
-    // const token = sessionStorage.getItem("jwt");
+    const token = sessionStorage.getItem("jwt");
     fetch(SERVER_URL + '/api/view_clients', {
-      // headers: { 'Authorization' : token }
+      headers: { 'Authorization' : token }
     })
     .then(response => response.json())
     .then(data => setClients(data))
@@ -36,9 +36,9 @@ function AddClientMembership(props){
   }
 
     const fetchMemberships = () => {
-        // const token = sessionStorage.getItem("jwt");
+        const token = sessionStorage.getItem("jwt");
         fetch(SERVER_URL + '/api/view_memberships', {
-          // headers: { 'Authorization' : token }
+          headers: { 'Authorization' : token }
         })
         .then(response => response.json())
         .then(data => setMemberships(data))
@@ -76,7 +76,7 @@ function AddClientMembership(props){
              onChange={(event) => { setClientId(event.target.value) }}>
              {clients.map(client => (
                <MenuItem key={client.idClient}
-                value={client.idClient}>{client.surName + " " + client.firstName + " " + client.patrSurName + 
+                value={client.idClient}>{"Клиент №" + client.idClient + ": " + client.surName + " " + client.firstName + " " + client.patrSurName + 
                 " (" + client.phoneNumber + ")"}</MenuItem>
              ))}
             </Select>
@@ -90,7 +90,7 @@ function AddClientMembership(props){
              onChange={(event) => { setMembershipId(event.target.value) }}>
              {memberships.map(membership => (
                <MenuItem key={membership.idSportComplexMembership}
-                value={membership.idSportComplexMembership}>{membership.name}</MenuItem>
+                value={membership.idSportComplexMembership}>{"Абонемент №" + membership.idSportComplexMembership + ": " + membership.name}</MenuItem>
              ))}
             </Select>
             </FormControl>
