@@ -28,9 +28,9 @@ function AddTraining(props){
   }, []);
 
   const fetchFacilities = () => {
-      // const token = sessionStorage.getItem("jwt");
+      const token = sessionStorage.getItem("jwt");
       fetch(SERVER_URL + '/api/view_facilities', {
-        // headers: { 'Authorization' : token }
+        headers: { 'Authorization' : token }
       })
       .then(response => response.json())
       .then(data => setFacilities(data))
@@ -49,7 +49,6 @@ function AddTraining(props){
   };
 
   const handleSave = () => {
-    console.log(complexFacilityId);
     props.addTraining(training, complexFacilityId);
     handleClose();
   }
@@ -88,7 +87,7 @@ function AddTraining(props){
              onChange={(event) => { setComplexFacilityId(event.target.value) }}>
              {facilities.map(facility => (
                <MenuItem key={facility.idComplexFacility}
-                value={facility.idComplexFacility}>{facility.facilityType}</MenuItem>
+                value={facility.idComplexFacility}>{facility.facilityType + " №" + facility.idComplexFacility}</MenuItem>
              ))}
             </Select>
             </FormControl>
