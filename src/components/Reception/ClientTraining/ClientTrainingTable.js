@@ -1,16 +1,16 @@
 
 import React,  { useEffect, useState } from 'react';
 import axios from 'axios';
-import { SERVER_URL, StyledDataGrid } from '../../constants.js';
+import { SERVER_URL, StyledDataGrid } from '../../../constants.js';
 import {ruRU} from '@mui/x-data-grid';
 import {GridToolbarContainer} from '@mui/x-data-grid';
 import {GridToolbarExport} from '@mui/x-data-grid';
 import {gridClasses } from '@mui/x-data-grid';
 import {Snackbar, Box, Typography} from '@mui/material';
-import '../CSS/employeeCSS.css';
-import '../CSS/table.css';
-import AddClientTraining from './AddClientTraining';
-import EditClientTraining from './EditClientTraining';
+import '../../CSS/employeeCSS.css';
+import '../../CSS/table.css';
+import AddClientTraining from './AddClientTraining.js';
+import EditClientTraining from './EditClientTraining.js';
 import { grey } from '@mui/material/colors';
 
 function CustomToolbar() {
@@ -21,10 +21,10 @@ function CustomToolbar() {
   );
 }
 
-const ClientTrainingTable = ({ setSelectedLink, link }) => {
+const ClientTrainingTable =({ setSelectedButtonLink, link }) => {
 
   useEffect(() => {
-    setSelectedLink(link);
+    setSelectedButtonLink(link);
   }, []);
 
 
@@ -37,22 +37,22 @@ const ClientTrainingTable = ({ setSelectedLink, link }) => {
     }, []);
   
     const fetchClientTrainings = () => {
-      // const token = sessionStorage.getItem("jwt");
+      const token = sessionStorage.getItem("jwt");
       fetch(SERVER_URL + '/api/clientTrainings', {
-        // headers: { 'Authorization' : token }
+        headers: { 'Authorization' : token }
       })
       .then(response => response.json())
       .then(data => setClientTrainings(data._embedded.clientTrainings))
       .catch(err => console.error(err));    
     }
-    const onDelClick = (url) => {
+    const onDelClick = (id) => {
       if (window.confirm("ВЫ уверены, что хотите удалить запись о согласованном занятии?")) {
 
-        // const token = sessionStorage.getItem("jwt");
+        const token = sessionStorage.getItem("jwt");
 
-        fetch(url, {
+        fetch(SERVER_URL + '/api/deleteClientTrainings?id=' + id.slice(id.lastIndexOf("/") + 1), {
           method: 'DELETE',
-          // headers: { 'Authorization' : token }
+          headers: { 'Authorization' : token }
           })
         .then(response => {
           if (response.ok) {
@@ -69,12 +69,12 @@ const ClientTrainingTable = ({ setSelectedLink, link }) => {
     }
     const addClientTraining = (trainingId, clientId) => {
 
-      // const token = sessionStorage.getItem("jwt");
+      const token = sessionStorage.getItem("jwt");
 
       fetch(SERVER_URL + '/api/save_client_training?trainingId=' + trainingId + "&clientId=" + clientId,
         { method: 'POST', headers: {
           'Content-Type':'application/json',
-          // 'Authorization' : token
+          'Authorization' : token
         },
       })
       .then(response => {
@@ -91,16 +91,14 @@ const ClientTrainingTable = ({ setSelectedLink, link }) => {
 
     const updateClientTraining = (link, trainingId, clientId) => {
 
-        console.log(link)
-
-      // const token = sessionStorage.getItem("jwt");
+      const token = sessionStorage.getItem("jwt");
 
       fetch(link + '?trainingId=' + trainingId + "&clientId=" + clientId ,
         { 
           method: 'PUT', 
           headers: {
           'Content-Type':  'application/json',
-          // 'Authorization' : token
+          'Authorization' : token
         },
       })
       .then(response => {
@@ -115,32 +113,51 @@ const ClientTrainingTable = ({ setSelectedLink, link }) => {
     }
      
     const fetchTrainings = async (url) => {
-       const token = sessionStorage.getItem("jwt");
-       try {
+      const token = sessionStorage.getItem("jwt");
+      try {
         const config = {
           headers: {
             'Authorization' : token
           }
         };
         const response = await axios.get(url, config);
+        let facility = await fetchTrainingFacilities(response.data._links.complexFacility.href)
         let id = response.data._links.self.href;
-        return id.slice(id.lastIndexOf("/") + 1);
+        return "Тренировка №" + id.slice(id.lastIndexOf("/") + 1) + ". Место проведения: "
+         + facility;
       } catch (error) {
         console.error('Error fetching trainings:', error);
         return 'N/A';
       }
     };
 
-    const fetchClients = async (url) => {
-         const token = sessionStorage.getItem("jwt");
-         try {
-         const config = {
+    const fetchTrainingFacilities = async (url) => {
+      const token = sessionStorage.getItem("jwt");
+      try {
+        const config = {
           headers: {
             'Authorization' : token
           }
         };
+        const response = await axios.get(url, config);
+        return response.data.facilityType;
+      } catch (error) {
+        console.error('Error fetching facilities:', error);
+        return 'N/A';
+      }
+    }
+
+    const fetchClients = async (url) => {
+      const token = sessionStorage.getItem("jwt");
+        try {
+          const config = {
+            headers: {
+              'Authorization' : token
+            }
+          };
           const response = await axios.get(url, config);
-          return response.data.surName + " " + response.data.firstName + " " + response.data.patrSurName + 
+          let id = response.data._links.self.href
+          return "Клиент №" + id.slice(id.lastIndexOf("/") + 1) + ": " + response.data.surName + " " + response.data.firstName + " " + response.data.patrSurName + 
           " (" + response.data.phoneNumber + ")";
         } catch (error) {
           console.error('Error fetching clients:', error);
@@ -150,9 +167,9 @@ const ClientTrainingTable = ({ setSelectedLink, link }) => {
 
 
     const columns = [
-      {field: 'status', headerName: 'Статус тренировки', width: 300},
-      {field: 'client', headerName: 'Имя клиента, записываемого на тренировку', width: 450},
-      {field: 'training', headerName: 'Код тренировки', width: 300},
+      {field: 'status', headerName: 'Статус тренировки', width: 160},
+      {field: 'client', headerName: 'Клиент, записываемый на тренировку', width: 520},
+      {field: 'training', headerName: 'Тренировка', width: 500},
       {
         field: '_links.client_training.href', 
         headerName: '', 
@@ -197,11 +214,11 @@ const ClientTrainingTable = ({ setSelectedLink, link }) => {
     }}
   >
     <Typography
-      variant="h4"
-      component="h4"
+      variant="h5"
+      component="h5"
       sx={{ textAlign: 'center', mt: 3, mb: 3 }}
     >
-      Рецепция
+      Согласование занятий
     </Typography>
       <main className='info_pages_body'>
     <React.Fragment>
@@ -212,6 +229,12 @@ const ClientTrainingTable = ({ setSelectedLink, link }) => {
           rows={rows} 
           disableSelectionOnClick={true}
           getRowId={row => row.id}
+          {...rows}
+          initialState={{
+            ...rows.initialState,
+            pagination: { paginationModel: { pageSize: 5 } },
+          }}
+          pageSizeOptions={[5, 10, 25]}
           components={{ Toolbar: CustomToolbar }}
           sx={{
             [`& .${gridClasses.row}`]: {
@@ -224,7 +247,7 @@ const ClientTrainingTable = ({ setSelectedLink, link }) => {
           open={open}
           autoHideDuration={2000}
           onClose={() => setOpen(false)}
-          message="Запись о тренировке удалена"
+          message="Запись о согласовании занятий удалена"
         />
       </div>
     </React.Fragment>
