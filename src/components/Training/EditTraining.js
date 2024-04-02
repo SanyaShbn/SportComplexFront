@@ -17,7 +17,7 @@ function EditTraining(props) {
   const [facilities, setFacilities] = useState([]);
   const [open, setOpen] = useState(false);
   const [training, setTraining] = useState({
-    trainingDateTime: '', cost: ''
+    trainingDateTime: '', cost: '', complexFacility: ''
   });
     
   useEffect(() => {
@@ -25,9 +25,9 @@ function EditTraining(props) {
   }, []);
 
   const fetchFacilities = () => {
-      // const token = sessionStorage.getItem("jwt");
+      const token = sessionStorage.getItem("jwt");
       fetch(SERVER_URL + '/api/view_facilities', {
-        // headers: { 'Authorization' : token }
+        headers: { 'Authorization' : token }
       })
       .then(response => response.json())
       .then(data => setFacilities(data))
@@ -35,9 +35,12 @@ function EditTraining(props) {
     }
 
   const handleClickOpen = () => {
+    let id = props.data.row.complexFacility.slice(props.data.row.complexFacility.lastIndexOf("№") + 1)
+    setComplexFacilityId(parseInt(id))
     setTraining({
       trainingDateTime: props.data.row.trainingDateTime,
-      cost: props.data.row.cost
+      cost: props.data.row.cost,
+      complexFacility: parseInt(id),
      })      
     setOpen(true);
   }
@@ -47,6 +50,12 @@ function EditTraining(props) {
   };
   
   const handleChange = (event) => {
+    setTraining({...training, 
+      [event.target.name]: event.target.value});
+  }
+
+  const handleChangeComplexFacility = (event) => {
+    setComplexFacilityId(event.target.value)
     setTraining({...training, 
       [event.target.name]: event.target.value});
   }
@@ -84,10 +93,11 @@ function EditTraining(props) {
              name='complexFacility'
              autoFocus variant="standard"
              label="Место проведения"
-             onChange={(event) => { setComplexFacilityId(event.target.value) }}>
+             value={training.complexFacility}
+             onChange={handleChangeComplexFacility}>
              {facilities.map(facility => (
                <MenuItem key={facility.idComplexFacility}
-                value={facility.idComplexFacility}>{facility.facilityType}</MenuItem>
+                value={facility.idComplexFacility}>{facility.facilityType + " №" + facility.idComplexFacility}</MenuItem>
              ))}
             </Select>
             </FormControl>
