@@ -1,4 +1,5 @@
-import React from 'react';
+import { React, useEffect } from 'react';
+import { useLocation } from 'react-router-dom'
 import {
   AppBar,
   Box,
@@ -17,6 +18,15 @@ const NavBar = () => {
     state: { currentUser },
     dispatch,
   } = useValue();
+
+  const location = useLocation();
+
+  useEffect(() => {
+    window.history.pushState(null, document.title, window.location.href);
+    window.addEventListener('popstate', function(event) {
+      window.history.pushState(null, document.title, window.location.href);
+    });
+  }, [location]);
 
   return (
     <AppBar>
