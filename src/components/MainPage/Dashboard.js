@@ -7,8 +7,9 @@ import {
   IconButton,
 } from '@mui/material';
 import MuiAppBar from '@mui/material/AppBar';
+import { useLocation } from 'react-router-dom'
 import { Brightness4, Brightness7, Menu } from '@mui/icons-material';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import SideList from './SideList';
 import logo from '../MainNavs/nav_images/logo.png'
 import '../CSS/main.css';
@@ -51,11 +52,17 @@ export default function Dashboard() {
     setOpen(true);
   };
 
+  const location = useLocation();
+
+  useEffect(() => {
+    window.history.pushState(null, document.title, window.location.href);
+    window.addEventListener('popstate', function(event) {
+      window.history.pushState(null, document.title, window.location.href);
+    });
+  }, [location]);
+
   return (
     <ThemeProvider theme={darkTheme}>
-    <style>
-    @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
-    </style>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
         <AppBar position="fixed" open={open}>
