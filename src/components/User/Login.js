@@ -11,8 +11,8 @@ import {
   InputAdornment
 } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
+import { useLocation } from 'react-router-dom'
 import { useValue } from '../../context/ContextProvider';
-import GoogleOneTapLogin from './GoogleOneTapLogin';
 import PasswordField from './PasswordField';
 import { SERVER_URL } from '../../constants';
 import { useNavigate } from 'react-router-dom';
@@ -38,6 +38,15 @@ const Login = () => {
   useEffect(() => {
     isRegister ? setTitle('Регистрация') : setTitle('Аутентификация');
   }, [isRegister]);
+
+  const location = useLocation();
+
+  useEffect(() => {
+    window.history.pushState(null, document.title, window.location.href);
+    window.addEventListener('popstate', function(event) {
+      window.history.pushState(null, document.title, window.location.href);
+    });
+  }, [location]);
 
   const [user, setUser] = useState({
     userLogin: '', 
@@ -73,17 +82,13 @@ const Login = () => {
   
   const login = () => {
     dispatch({ type: 'START_LOADING' });
-
-    setTimeout(() => {
-      dispatch({ type: 'END_LOADING' });
-    }, 3000);
-    console.log(JSON.stringify(user))
     fetch(SERVER_URL + '/login', {
       method: 'POST',
       headers: { 'Content-Type':'application/json' },
       body: JSON.stringify(user)
     })
     .then(res => {
+      dispatch({ type: 'END_LOADING' });
       const jwtToken = res.headers.get('Authorization');
       if (jwtToken !== null) {
         sessionStorage.setItem("jwt", jwtToken);
@@ -117,17 +122,14 @@ const Login = () => {
         },
       });
     else{
-      dispatch({ type: 'START_LOADING' });
-
-      setTimeout(() => {
-        dispatch({ type: 'END_LOADING' });
-      }, 3000);
+    dispatch({ type: 'START_LOADING' });
     fetch(SERVER_URL + '/register', {
       method: 'POST',
       headers: { 'Content-Type':'application/json' },
       body: JSON.stringify(user)
     })
     .then(response => {
+      dispatch({ type: 'END_LOADING' });
       if (!response.ok) {
         dispatch({
         type: 'UPDATE_ALERT',
@@ -147,7 +149,6 @@ const Login = () => {
           },});
           setIsRegister(false)
           clearValues()
-
       }
     })
     .catch(err => console.error(err))
@@ -188,20 +189,6 @@ const Login = () => {
           <DialogContentText>
             Пожалуйста, заполните следующие поля:
           </DialogContentText>
-          {isRegister && (
-            <TextField
-              autoFocus
-              margin="normal"
-              variant="standard"
-              id="name"
-              label="Name"
-              type="text"
-              fullWidth
-              inputRef={nameRef}
-              inputProps={{ minLength: 2 }}
-              required
-            />
-          )}
           <TextField
             autoFocus={!isRegister}
             margin="normal"
@@ -260,22 +247,22 @@ const Login = () => {
             endIcon={<Send />}
             color="primary" 
             onClick={handleRegisterClick}>
-            Зарегестрировать
+            Зарегистрировать
           </Button>
         </DialogActions>
         )}
       </form>
       <DialogActions sx={{ justifyContent: 'left', p: '5px 24px' }}>
         {isRegister
-          ? 'Do you have an account? Sign in now '
-          : "Don't you have an account? Create one now "}
+          ? 'Вы зарегестрированы в системе? Войти '
+          : "Впервые используете систему? Создайте аккаунт "}
         <Button onClick={() => setIsRegister(!isRegister)}>
-          {isRegister ? 'Login' : 'Register'}
+          {isRegister ? 'Назад' : 'Регистрация'}
         </Button>
       </DialogActions>
-      <DialogActions sx={{ justifyContent: 'center', py: '24px' }}>
+      {/* <DialogActions sx={{ justifyContent: 'center', py: '24px' }}>
         <GoogleOneTapLogin />
-      </DialogActions>
+      </DialogActions> */}
     </Dialog>
         {/* <Stack spacing={2} alignItems='center' mt={2}>
           <TextField 
