@@ -1,9 +1,10 @@
 import {BsFillPersonVcardFill, BsPeopleFill, BsReception4} from "react-icons/bs"
 import {IoIosFitness} from "react-icons/io"
 import {MdOutlineSportsGymnastics, MdCardMembership, MdAttachMoney} from "react-icons/md"
-import { FaTruckLoading } from "react-icons/fa"
+import { FaTruckLoading, FaCalendarAlt } from "react-icons/fa"
 import { CiDiscount1 } from "react-icons/ci"
 import { GrDomain } from "react-icons/gr";
+import Sheduler from "../Sheduler/Sheduler"
 import {
     Avatar,
     Box,
@@ -32,7 +33,8 @@ import ComplexFacilityTable from "../ComplexFacility/ComplexFacilitytable"
 import TrainingTable from "../Training/TrainingTable"
 import SportComplexMembershipTable from "../SportComplexMembership/SportComplexMembershipTable"
 import ReceptionButtonsList from "./ReceptionButtonsList"
-import { SERVER_URL } from '../../constants';
+import SetTheme from "../Sheduler/SetTheme"
+// import { jwtDecode } from 'jwt-decode';
   
   const drawerWidth = 250;
   
@@ -91,9 +93,16 @@ import { SERVER_URL } from '../../constants';
     }
   
     const [selectedLink, setSelectedLink] = useState('');
+    // const token = sessionStorage.getItem("jwt");
+      
+    // const decodedToken = jwtDecode(token);
+
+    // const roles = decodedToken.roles
 
     const list = useMemo(
-      () => [
+      () => {
+        
+        let componentsToShow = [
         {
           title: 'Главная страница',
           icon: <GrDomain />,
@@ -125,6 +134,20 @@ import { SERVER_URL } from '../../constants';
           component: <TrainingTable {...{ setSelectedLink, link: 'trainings' }}/>,
         },
         {
+          title: 'Расписание',
+          icon: <FaCalendarAlt />,
+          link: 'shedule',
+          component:
+          <div>
+          <div>
+          <SetTheme/>
+          </div>
+          <div> 
+          <Sheduler {...{ setSelectedLink, link: 'shedule' }}/>
+          </div>
+          </div>
+        },
+        {
             title: 'Поставщики',
             icon: <FaTruckLoading />,
             link: '',
@@ -152,9 +175,25 @@ import { SERVER_URL } from '../../constants';
             link: 'reception/*',
             component: <ReceptionButtonsList {...{ setSelectedLink, link: 'reception/*' }}/>,
           },
-      ],
-      []
-    );
+      ];
+
+      // if (roles.toString() == 'ADMIN') {
+      //   componentsToShow.push(
+      //     {
+      //       title: 'Сотрудники',
+      //       icon: <BsPeopleFill />,
+      //       link: 'service_employees',
+      //       component: <EmployeeTable {...{ setSelectedLink, link: 'service_employees' }} />,
+      //     },
+      //   );
+      // }
+
+ return componentsToShow;
+});
+
+//  return componentsToShow; 
+// }, [roles]); - для авторизации
+
     const navigate = useNavigate();
     return (
       <>
