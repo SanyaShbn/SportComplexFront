@@ -74,12 +74,44 @@ export default class ScheduleCalendar extends Component {
         scheduler.i18n.setLocale("ru");
   }
      componentDidMount() {
-        fetch(SERVER_URL + '/api/events')
+
+        // const token = sessionStorage.getItem("jwt");
+        fetch(SERVER_URL + '/api/events', {
+             headers: {
+            //   'Authorization' : token
+            }
+        })
         .then(response => response.json())
         .then(data => {
             scheduler.parse(data, 'json');
         })
         .catch(error => console.error(error));
+
+        fetch(SERVER_URL + '/api/view_trainings', {
+            headers: {
+                //   'Authorization' : token
+                }
+              })
+              .then(response => response.json())
+              .then(data => {
+                const options = data.map(item => ({
+                    key: item.idTraining,
+                    label: "Трунировка №" + item.idTraining,
+                }));
+                  scheduler.config.lightbox.sections = [
+                      { 
+                          name:"Тренировка", 
+                          height:21, 
+                          inputWidth:400, 
+                          map_to:"text", 
+                          type:"select", 
+                          options: scheduler.serverList("options", options)
+                      },
+                      {name:"time", height:72, type:"time", map_to:"auto"}
+                  ];
+              })
+        .catch(err => console.error(err));
+
         scheduler.config.header = [
             'day',
             'week',
@@ -93,6 +125,18 @@ export default class ScheduleCalendar extends Component {
         scheduler.xy.scale_width = 70;
  
         this.initSchedulerEvents();
+         
+        scheduler.templates.event_text = scheduler.templates.event_bar_text = function(start, end, event){
+            var options = scheduler.serverList("options");
+         
+            for(var i = 0; i < options.length; i++){
+                if(options[i].key == event.text){
+                    return options[i].label;
+                }
+            }
+         
+            return "";
+        };
         
         scheduler.init(this.schedulerContainer, new Date());
     }
@@ -108,6 +152,7 @@ export default class ScheduleCalendar extends Component {
 
     // }
 
+    
     componentWillUnmount() {
       scheduler.clearAll();
     }
