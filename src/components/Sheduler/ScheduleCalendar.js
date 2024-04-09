@@ -20,6 +20,7 @@ export default class ScheduleCalendar extends Component {
             if (onDataUpdated) {
                 onDataUpdated('create', ev, id);
             }
+            
             fetch(SERVER_URL + '/api/events', {
                 method: 'POST',
                 headers: {
@@ -36,11 +37,10 @@ export default class ScheduleCalendar extends Component {
                   alert('Что-то пошло не так!');
                 }
               })
-              .catch(err => console.error(err))
+            .catch(err => console.error(err))
         });
  
         scheduler.attachEvent('onEventChanged', (id, ev) => {
-            console.log(ev.id)
             if (onDataUpdated) {
                 onDataUpdated('update', ev, id);
             }
@@ -52,14 +52,9 @@ export default class ScheduleCalendar extends Component {
                 },
                 body: JSON.stringify(ev)
             })
-            .then(response => {
-                if (response.ok) {
-                  //сообщение, используя Redux
-                }
-                else {
-                  alert('Что-то пошло не так!');
-                }
-              })
+            .then(
+                scheduler.render()
+              )
               .catch(err => console.error(err))
         });
  
@@ -79,10 +74,12 @@ export default class ScheduleCalendar extends Component {
         scheduler.i18n.setLocale("ru");
   }
      componentDidMount() {
-        this.initializeScheduler();
-    }
-    
-    initializeScheduler = () => {
+        fetch(SERVER_URL + '/api/events')
+        .then(response => response.json())
+        .then(data => {
+            scheduler.parse(data, 'json');
+        })
+        .catch(error => console.error(error));
         scheduler.config.header = [
             'day',
             'week',
@@ -96,13 +93,20 @@ export default class ScheduleCalendar extends Component {
         scheduler.xy.scale_width = 70;
  
         this.initSchedulerEvents();
-
-        const events = this.props.events
         
         scheduler.init(this.schedulerContainer, new Date());
-
-        scheduler.parse(events, "json");
     }
+    
+    // fetchAndParseEvents() {
+    //     fetch(SERVER_URL + '/api/events')
+    //         .then(response => response.json())
+    //         .then(data => {
+    //             scheduler.parse(data._embedded.events, 'json');
+    //             localStorage.setItem('events', JSON.stringify(data._embedded.events));
+    //         })
+    //         .catch(error => console.error(error));
+
+    // }
 
     componentWillUnmount() {
       scheduler.clearAll();
@@ -112,10 +116,8 @@ export default class ScheduleCalendar extends Component {
         return this.props.timeFormatState !== nextProps.timeFormatState;
     }
  
-    componentDidUpdate([prevProps]) {
-        if (this.props.events !== prevProps.events) {
-            this.initializeScheduler();
-          }
+    componentDidUpdate() {
+        scheduler.render();
     }
  
     setTimeFormat(state) {
@@ -126,7 +128,6 @@ export default class ScheduleCalendar extends Component {
     render() {
         const { timeFormatState } = this.props;
         this.setTimeFormat(timeFormatState);
-        this.events = this.props
         return (
             <div
                 ref={ (input) => { this.schedulerContainer = input } }
