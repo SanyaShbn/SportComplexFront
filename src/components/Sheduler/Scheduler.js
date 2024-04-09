@@ -5,32 +5,28 @@ import './MessageArea.css';
 import Toolbar from "./Toolbar.js"
 import MessageArea from "./MessageArea.js"
 import ScheduleCalendar from "./ScheduleCalendar.js"
-import { SERVER_URL } from '../../constants.js';
+// import { SERVER_URL } from '../../constants.js';
 
 const Scheduler = ({ setSelectedLink, link }) => {
 
-	// const [trainings, setTrainings] = useState([]);
-	// const [schedule_data, setScheduleData] = useState([])
-
-	const [events, setEvents] = useState([]); 
-	const [rows, setRows] = useState([])
+	// const [events, setEvents] = useState([]); 
 
     useEffect(() => {
         setSelectedLink(link);
-		fetchEvents();
+		// fetchEvents();
       }, []);
 
-	  const fetchEvents = () => {
-		// const token = sessionStorage.getItem("jwt");
-		fetch(SERVER_URL + '/api/events', {
-		//   headers: { 'Authorization' : token }
-		})
-		.then(response => response.json())
-		.then(data => {
-			setEvents(data._embedded.events)
-	    })
-		.catch(err => console.error(err)); 
-	}
+	//   const fetchEvents = () => {
+	// 	// const token = sessionStorage.getItem("jwt");
+	// 	fetch(SERVER_URL + '/api/events', {
+	// 	//   headers: { 'Authorization' : token }
+	// 	})
+	// 	.then(response => response.json())
+	// 	.then(data => {
+	// 		setEvents(data._embedded.events)
+	//     })
+	// 	.catch(err => console.error(err)); 
+	// }
     
 	const [currentTimeFormatState, setTimeFormat] = useState(true);
 	const [messages, setMessages] = useState([]);
@@ -45,32 +41,6 @@ const Scheduler = ({ setSelectedLink, link }) => {
 		addMessage(message);
 	}
 
-	// useEffect(() => {
-	// 	const updateRows = async () => {
-	// 	  const updatedRows = await Promise.all(events.map(async event => ({
-	// 		id: event.id,
-	// 		start_date: "2024-04-08 2:00",
-	// 		end_date: "2024-04-08 8:00",
-	// 		text: event.text,
-	// 	  })));
-	// 	  setRows(updatedRows);
-	// 	};
-	// 	updateRows();
-	//   }, [events]);
-                 
-	//   const data = rows
-	//   console.log(data)
-	// const showTrainings = () => {
-	// 	let i = 0
-	// 	const trainings_arr = trainings.map(training => ({
-	// 		start_date: "2024-04-25 18:30",
-	// 		end_date: "2024-04-25 19:30",
-	// 		text: 'Абоба',
-	// 		id: i++
-	// 	  }));
-	// 	setScheduleData(trainings_arr)
-	// 	console.log(schedule_data)
-	// }
 	return (
 		<div>
 			<div className="tool-bar">
@@ -81,7 +51,6 @@ const Scheduler = ({ setSelectedLink, link }) => {
 			</div>
 			<div className="scheduler-container">
 				<ScheduleCalendar
-					events={events}
 					timeFormatState={currentTimeFormatState}
 					onDataUpdated={logDataUpdate}
 				/>
